@@ -57,7 +57,7 @@ const allCourses = [
     duration: "เปิดให้เรียนแล้ว",
     price: "ฟรี",
     level: "เริ่มต้น",
-    image: "/nextjs-ai.png",
+    image: "/courses/nextjs-ai-2026.png",
   },
   {
     title: "NodeJS สำหรับการพัฒนาเว็บสมัยใหม่",
