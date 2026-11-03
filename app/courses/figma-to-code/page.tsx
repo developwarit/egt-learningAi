@@ -7,9 +7,9 @@ import { CheckCircle2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const episodes = [
-  { id: 1, title: "Ep 1: แนะนำคอร์สและวิธีใช้ MCP Figma", src: "/videos/figma2code.mp4" },
-  { id: 2, title: "Ep 2: แปลง Design เป็น Code", src: "/videos/figma2code-ep2.mp4" },
-  { id: 3, title: "Ep 3: Workshop แปลง Design เป็น Code", src: "/videos/figma2code-ep3.mp4" },
+  { id: 1, title: "Ep 1: แนะนำคอร์สและวิธีใช้ MCP Figma", videoId: "tcehtUlJly0" },
+  { id: 2, title: "Ep 2: แปลง Design เป็น Code", videoId: "-1W1l3aJVHw" },
+  { id: 3, title: "Ep 3: Workshop แปลง Design เป็น Code", videoId: "aOz2SbXn6DQ" },
 ];
 
 function VideoPlayer() {
@@ -33,11 +33,13 @@ function VideoPlayer() {
         ))}
       </div>
       <div className="relative w-full overflow-hidden rounded-2xl border border-gray-200 bg-black">
-        <video
+        <iframe
           key={currentEp}
-          src={episodes[currentEp].src}
-          controls
-          className="w-full aspect-video object-cover"
+          src={`https://www.youtube-nocookie.com/embed/${episodes[currentEp].videoId}`}
+          title={episodes[currentEp].title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          className="w-full aspect-video"
         />
       </div>
     </div>
