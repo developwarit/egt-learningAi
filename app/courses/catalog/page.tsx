@@ -46,7 +46,7 @@ const allCourses = [
     duration: "3 Ep",
     price: "ฟรี",
     level: "เริ่มต้น",
-    image: "/figma2code.png",
+    image: "/courses/figma-to-code.jpg",
   },
   {
     title: "NextJS ในยุค AI ปี 2026",
