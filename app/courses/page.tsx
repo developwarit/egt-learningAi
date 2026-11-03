@@ -32,7 +32,7 @@ const courses = [
     duration: "6 ชม. 50 นาที",
     price: "ฟรี",
     status: "เปิดให้เรียนแล้ว",
-    image: "/java.png",
+    image: "/courses/javascript-mastery.jpg",
   },
   {
     title: "Figma to Code",
