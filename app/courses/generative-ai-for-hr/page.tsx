@@ -13,13 +13,13 @@ export default function CourseDetailPage() {
             href="/courses"
             className="font-mono text-sm font-semibold tracking-[0.18em] text-gray-900 transition hover:text-gray-700"
           >
-            dev.warit
+            EGT-Learning
           </Link>
           <Link
             href="/courses"
-            className="flex items-center gap-2 text-sm text-gray-500 transition hover:text-gray-900"
+            className="group flex items-center gap-2 rounded-full border border-gray-200 bg-white/70 px-4 py-2 text-sm font-medium text-gray-600 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-gray-300 hover:text-gray-900 hover:shadow-md active:translate-y-0"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
             </svg>
             กลับหน้าคอร์ส

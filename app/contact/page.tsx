@@ -49,7 +49,7 @@ export default function ContactPage() {
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-5 py-4 sm:px-8 lg:px-8">
           <Link href="/courses" className="text-lg font-bold tracking-tight text-gray-900">
-            dev.warit
+            EGT-Learning
           </Link>
         </div>
       </header>
@@ -265,7 +265,7 @@ export default function ContactPage() {
       {/* Footer */}
       <footer className="border-t border-gray-200 bg-white py-8">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-8 text-center">
-          <p className="text-sm text-gray-500">© 2026 dev.warit. All rights reserved.</p>
+          <p className="text-sm text-gray-500">© 2026 EGT-Learning. All rights reserved.</p>
         </div>
       </footer>
     </main>

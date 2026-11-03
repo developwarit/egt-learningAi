@@ -14,6 +14,7 @@ datasource db {
 model User {
   id            String    @id @default(cuid())
   name          String?
+  username      String?   @unique
   email         String?   @unique
   emailVerified DateTime?
   image         String?
@@ -25,6 +26,9 @@ model User {
   sessions      Session[]
   progress      UserProgress[]
   certificates  Certificate[]
+  posts         CommunityPost[]
+  postLikes     CommunityLike[]
+  postComments  CommunityComment[]
 }
 
 model Account {
@@ -82,4 +86,38 @@ model Certificate {
   revokedAt     DateTime?
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@unique([userId, courseId])
+}
+
+model CommunityPost {
+  id        String   @id @default(cuid())
+  caption   String?
+  image     Bytes?
+  imageType String?
+  authorId  String
+  createdAt DateTime @default(now())
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  CommunityLike[]
+  comments CommunityComment[]
+  @@index([createdAt])
+}
+
+model CommunityComment {
+  id        String   @id @default(cuid())
+  body      String
+  postId    String
+  authorId  String
+  createdAt DateTime @default(now())
+  post   CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  @@index([postId, createdAt])
+}
+
+model CommunityLike {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+  post CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([postId, userId])
 }

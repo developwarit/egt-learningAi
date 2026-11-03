@@ -16,20 +16,25 @@ export async function POST(request: Request) {
       );
     }
 
-    const { email, password } = await request.json();
+    const body = await request.json();
+    // รองรับทั้ง username และอีเมล (เผื่อบัญชีเก่าที่ตั้งไว้ก่อนมี username)
+    const identifier = String(body.username ?? body.email ?? "").trim();
+    const password = String(body.password ?? "");
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       return NextResponse.json(
-        { error: "กรุณากรอกอีเมลและรหัสผ่าน" },
+        { error: "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน" },
         { status: 400 }
       );
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = identifier.includes("@")
+      ? await prisma.user.findUnique({ where: { email: identifier } })
+      : await prisma.user.findUnique({ where: { username: identifier.toLowerCase() } });
 
     if (!user || !user.hashedPassword) {
       return NextResponse.json(
-        { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" },
+        { error: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" },
         { status: 401 }
       );
     }
@@ -38,7 +43,7 @@ export async function POST(request: Request) {
 
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" },
+        { error: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" },
         { status: 401 }
       );
     }
@@ -46,13 +51,13 @@ export async function POST(request: Request) {
     // Create JWT session
     const token = await signSession({
       userId: user.id,
-      email: user.email!,
+      email: user.email ?? "",
       name: user.name,
     });
 
     const response = NextResponse.json({
       message: "เข้าสู่ระบบสำเร็จ",
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: { id: user.id, name: user.name, username: user.username, email: user.email, role: user.role },
     });
 
     // Set JWT cookie

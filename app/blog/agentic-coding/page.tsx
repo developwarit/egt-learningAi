@@ -14,14 +14,16 @@ const fadeIn = {
 export default function BlogPage() {
   // Update page title
   if (typeof window !== "undefined") {
-    document.title = "dev.warit - Agentic Coding";
+    document.title = "EGT-Learning - Agentic Coding";
   }
   return (
     <main className="min-h-screen bg-[#faf9f7] text-gray-900">
       {/* Header */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-gray-200 bg-[#faf9f7]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
-          <Link href="/" className="transition hover:opacity-80"><img src="/logo.svg" alt="Warit Panyeam" className="h-8" /></Link>
+          <Link href="/courses" className="text-lg font-bold tracking-tight text-gray-900">
+            EGT-Learning
+          </Link>
           <Link
             href="/blog"
             className="flex items-center gap-2 text-sm text-gray-800 transition hover:text-gray-900"
@@ -49,16 +51,16 @@ export default function BlogPage() {
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
           {/* Breadcrumb */}
-          <motion.nav {...fadeIn} className="flex items-center gap-2 text-sm text-gray-900">
-            <Link href="/" className="transition hover:text-gray-900">
+          <motion.nav {...fadeIn} className="flex items-center gap-2 overflow-hidden text-sm text-gray-500">
+            <Link href="/courses" className="shrink-0 whitespace-nowrap transition hover:text-gray-900">
               หน้าแรก
             </Link>
-            <span>/</span>
-            <Link href="/blog" className="transition hover:text-gray-900">
+            <span className="shrink-0">/</span>
+            <Link href="/blog" className="shrink-0 whitespace-nowrap transition hover:text-gray-900">
               บทความ
             </Link>
-            <span>/</span>
-            <span className="truncate text-gray-900">พื้นฐาน Web Dev ที่ต้องรู้ก่อนใช้ Agen...</span>
+            <span className="shrink-0">/</span>
+            <span className="min-w-0 truncate text-gray-900">พื้นฐาน Web Dev ที่ต้องรู้ก่อนใช้ Agentic Coding</span>
           </motion.nav>
 
           {/* Tags */}
@@ -66,7 +68,7 @@ export default function BlogPage() {
             {["agentic coding", "html", "javascript", "css"].map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-medium text-gray-900"
+                className="rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-600"
               >
                 {tag}
               </span>
@@ -79,14 +81,12 @@ export default function BlogPage() {
             {...fadeIn}
             transition={{ delay: 0.1 }}
           >
-            พื้นฐาน Web Dev ที่ต้องรู้ก่อน
-            <br />
-            ใช้ Agentic Coding
+            พื้นฐาน Web Dev ที่ต้องรู้ก่อนใช้ Agentic Coding
           </motion.h1>
 
           {/* Description */}
           <motion.p
-            className="mt-6 text-lg leading-relaxed text-gray-900"
+            className="mt-6 text-lg leading-relaxed text-gray-600"
             {...fadeIn}
             transition={{ delay: 0.15 }}
           >
@@ -101,11 +101,11 @@ export default function BlogPage() {
           >
             {/* Author */}
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-lg font-bold text-gray-900">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white">
                 WP
               </div>
               <div>
-                <p className="text-xs text-gray-900">ผู้เขียน</p>
+                <p className="text-xs text-gray-500">ผู้เขียน</p>
                 <p className="font-semibold text-gray-900">Warit Panyeam</p>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function BlogPage() {
             {/* Stats */}
             <div className="flex flex-wrap gap-6 text-sm">
               <div>
-                <p className="text-xs text-gray-900">เผยแพร่</p>
+                <p className="text-xs text-gray-500">เผยแพร่</p>
                 <p className="font-medium text-gray-900">19 กรกฎาคม 2569</p>
               </div>
               <div>
@@ -226,7 +226,7 @@ export default function BlogPage() {
               {/* Reason 1 */}
               <div className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
                 <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-xs font-bold">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
                     1
                   </span>
                   สั่ง AI ได้ตรงและละเอียดกว่า
@@ -234,12 +234,12 @@ export default function BlogPage() {
                 <p className="mt-3 text-gray-600">
                   ความแตกต่างระหว่าง prompt ที่ดีกับไม่ดีมหาศาลมาก:
                 </p>
-                <div className="mt-3 rounded-lg bg-gray-800 p-4 font-mono text-sm">
-                  <p className="text-red-400">
-                    ❌ &quot;ทำให้เว็บสวยขึ้น และเพิ่มฟีเจอร์ login ด้วย&quot;
+                <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-4 font-mono text-sm">
+                  <p className="text-red-600">
+                    ไม่ดี &quot;ทำให้เว็บสวยขึ้น และเพิ่มฟีเจอร์ login ด้วย&quot;
                   </p>
-                  <p className="mt-2 text-green-400">
-                    ✅ &quot;เพิ่มหน้า /login ด้วย Next.js App Router ใช้ NextAuth.js กับ
+                  <p className="mt-2 text-green-700">
+                    ดี &quot;เพิ่มหน้า /login ด้วย Next.js App Router ใช้ NextAuth.js กับ
                     Credentials provider...&quot;
                   </p>
                 </div>
@@ -248,7 +248,7 @@ export default function BlogPage() {
               {/* Reason 2 */}
               <div className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
                 <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-xs font-bold">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
                     2
                   </span>
                   ตรวจสอบโค้ดที่ AI สร้างได้
@@ -262,7 +262,7 @@ export default function BlogPage() {
               {/* Reason 3 */}
               <div className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
                 <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-xs font-bold">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
                     3
                   </span>
                   Debug ได้เองเมื่อเกิดปัญหา
@@ -276,7 +276,7 @@ export default function BlogPage() {
               {/* Reason 4 */}
               <div className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
                 <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-xs font-bold">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
                     4
                   </span>
                   ตัดสินใจด้าน Architecture ได้
@@ -291,7 +291,7 @@ export default function BlogPage() {
               {/* Reason 5 */}
               <div className="mb-6 rounded-xl border border-gray-200 bg-white p-5">
                 <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-xs font-bold">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
                     5
                   </span>
                   ไม่กลัวเมื่อ AI ทำพัง
@@ -312,37 +312,37 @@ export default function BlogPage() {
                 {[
                   {
                     num: "1",
-                    title: "🌐 เข้าใจว่า Web ทำงานยังไง",
+                    title: "เข้าใจว่า Web ทำงานยังไง",
                     desc: "Client vs Server, HTTP Request/Response, Status codes, API",
                   },
                   {
                     num: "2",
-                    title: "📄 HTML — โครงสร้างของหน้าเว็บ",
+                    title: "HTML — โครงสร้างของหน้าเว็บ",
                     desc: "Semantic elements, Forms, Links & Images, JSX",
                   },
                   {
                     num: "3",
-                    title: "🎨 CSS — ทำให้สวยงาม",
+                    title: "CSS — ทำให้สวยงาม",
                     desc: "Box Model, Flexbox, Grid, Responsive, Tailwind CSS",
                   },
                   {
                     num: "4",
-                    title: "⚡ JavaScript — ทำให้มีชีวิต",
+                    title: "JavaScript — ทำให้มีชีวิต",
                     desc: "Variables, Functions, Arrays, Objects, Async/Await, TypeScript",
                   },
                   {
                     num: "5",
-                    title: "🔧 Tools — VS Code, Node.js, npm",
+                    title: "Tools — VS Code, Node.js, npm",
                     desc: "VS Code shortcuts, Terminal commands, Project structure",
                   },
                   {
                     num: "6",
-                    title: "🐙 Git — Version Control",
+                    title: "Git — Version Control",
                     desc: "init, add, commit, push, stash, revert — กฎทอง: commit ก่อนสั่ง AI เสมอ",
                   },
                   {
                     num: "7",
-                    title: "🐛 อ่าน Error Messages ได้",
+                    title: "อ่าน Error Messages ได้",
                     desc: "TypeError, 404, 500, Module not found, 'use client' directive",
                   },
                 ].map((item) => (
@@ -350,7 +350,7 @@ export default function BlogPage() {
                     key={item.num}
                     className="flex items-start gap-4 rounded-xl border border-gray-200 bg-white p-4"
                   >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
                       {item.num}
                     </span>
                     <div>
@@ -370,31 +370,31 @@ export default function BlogPage() {
               <div className="rounded-xl border border-gray-200 bg-white p-6">
                 <div className="space-y-4 font-mono text-sm text-gray-900">
                   <div>
-                    <span className="text-blue-400">1. วางแผนก่อน</span>
+                    <span className="text-blue-600">1. วางแผนก่อน</span>
                     <p className="ml-6 text-gray-500">└─ รู้ว่าต้องการ feature อะไร แบ่งเป็นขั้นตอนเล็กๆ</p>
                   </div>
                   <div>
-                    <span className="text-blue-400">2. Commit ก่อนเริ่ม</span>
+                    <span className="text-blue-600">2. Commit ก่อนเริ่ม</span>
                     <p className="ml-6 text-gray-500">└─ git add . &amp;&amp; git commit -m &quot;before: add feature&quot;</p>
                   </div>
                   <div>
-                    <span className="text-blue-400">3. ให้ Context ครบ</span>
+                    <span className="text-blue-600">3. ให้ Context ครบ</span>
                     <p className="ml-6 text-gray-500">└─ บอก tech stack, @mention ไฟล์ที่เกี่ยวข้อง</p>
                   </div>
                   <div>
-                    <span className="text-blue-400">4. สั่งทีละขั้น</span>
+                    <span className="text-blue-600">4. สั่งทีละขั้น</span>
                     <p className="ml-6 text-gray-500">└─ ไม่สั่ง 10 อย่างพร้อมกัน ตรวจสอบก่อนไปขั้นถัดไป</p>
                   </div>
                   <div>
-                    <span className="text-blue-400">5. Review โค้ดที่ AI สร้าง</span>
+                    <span className="text-blue-600">5. Review โค้ดที่ AI สร้าง</span>
                     <p className="ml-6 text-gray-500">└─ อ่านทุกบรรทัด ตรวจ security issues</p>
                   </div>
                   <div>
-                    <span className="text-blue-400">6. Test ก่อน commit</span>
+                    <span className="text-blue-600">6. Test ก่อน commit</span>
                     <p className="ml-6 text-gray-500">└─ รัน npm run dev ทดสอบ manual + npm test</p>
                   </div>
                   <div>
-                    <span className="text-blue-400">7. Commit หลังทำสำเร็จ</span>
+                    <span className="text-blue-600">7. Commit หลังทำสำเร็จ</span>
                     <p className="ml-6 text-gray-500">└─ git commit -m &quot;feat: add payment with Stripe&quot;</p>
                   </div>
                 </div>
@@ -408,7 +408,7 @@ export default function BlogPage() {
               </h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-xl border border-green-200 bg-green-50 p-5">
-                  <h3 className="font-bold text-green-700">AI ทำได้ดีมาก ✅</h3>
+                  <h3 className="font-bold text-green-700">AI ทำได้ดีมาก</h3>
                   <ul className="mt-3 space-y-2 text-sm text-gray-700">
                     <li>• สร้าง boilerplate code</li>
                     <li>• แก้ TypeScript type errors</li>
@@ -418,7 +418,7 @@ export default function BlogPage() {
                   </ul>
                 </div>
                 <div className="rounded-xl border border-orange-200 bg-orange-50 p-5">
-                  <h3 className="font-bold text-orange-700">ต้องการคนควบคุม ⚠️</h3>
+                  <h3 className="font-bold text-orange-700">ต้องการคนควบคุม</h3>
                   <ul className="mt-3 space-y-2 text-sm text-gray-700">
                     <li>• Architecture decisions</li>
                     <li>• Security decisions</li>
@@ -432,16 +432,16 @@ export default function BlogPage() {
 
             {/* Conclusion */}
             <motion.section id="conclusion" {...fadeIn}>
-              <div className="my-8 border-t border-white/10" />
+              <div className="my-8 border-t border-gray-200" />
               <h2 className="mb-4 text-2xl font-bold text-gray-900">
                 บทสรุป: AI เป็นเครื่องมือ ไม่ใช่นาย
               </h2>
               <p className="text-gray-600">
-                คนที่รู้พื้นฐาน + ใช้ Agentic Coding = <strong className="text-green-400">ทีมที่ทรงพลังที่สุด</strong>
+                คนที่รู้พื้นฐาน + ใช้ Agentic Coding = <strong className="text-green-700">ทีมที่ทรงพลังที่สุด</strong>
               </p>
               <p className="mt-2 text-gray-600">
                 คนที่ไม่รู้พื้นฐาน + ใช้ Agentic Coding ={" "}
-                <strong className="text-red-400">ปัญหาที่ใหญ่กว่าเดิม</strong>
+                <strong className="text-red-600">ปัญหาที่ใหญ่กว่าเดิม</strong>
               </p>
               <p className="mt-4 font-semibold text-gray-900">
                 เริ่มต้นเรียนพื้นฐานวันนี้ แล้วคุณจะพบว่า Agentic Coding ทรงพลังแค่ไหนเมื่ออยู่ในมือของคนที่รู้ว่ากำลังทำอะไรอยู่
@@ -449,7 +449,7 @@ export default function BlogPage() {
             </motion.section>
           </div>
           {/* Sidebar - TOC */}
-          <div className="hidden lg:block">
+          <div className="min-w-0">
             <div className="sticky top-24">
               <TableOfContents />
             </div>
@@ -468,15 +468,18 @@ export default function BlogPage() {
         <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div>
-              <p className="font-semibold text-gray-900">Warit Panyeam</p>
-              <p className="text-sm text-gray-900">สร้างด้วย Next.js & Tailwind CSS</p>
+              <p className="font-semibold text-gray-900">EGT-Learning</p>
+              <p className="text-sm text-gray-500">สร้างด้วย Next.js &amp; Tailwind CSS</p>
             </div>
-            <div className="flex gap-4">
-              <a href="https://github.com/developwarit" target="_blank" rel="noreferrer" className="text-gray-900 transition hover:text-gray-900">GitHub</a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-gray-900 transition hover:text-gray-900">LinkedIn</a>
-            </div>
+            <nav className="flex gap-5 text-sm text-gray-600">
+              <Link href="/courses/catalog" className="transition hover:text-gray-900">คอร์สทั้งหมด</Link>
+              <Link href="/blog" className="transition hover:text-gray-900">บทความ</Link>
+              <Link href="/contact" className="transition hover:text-gray-900">ติดต่อ</Link>
+            </nav>
           </div>
-          <p className="mt-6 text-center text-xs text-gray-900">ออกแบบและพัฒนาโดย วริทธิ์</p>
+          <p className="mt-6 text-center text-xs text-gray-500">
+            © {new Date().getFullYear()} EGT-Learning
+          </p>
         </div>
       </footer>
     </main>

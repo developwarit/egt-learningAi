@@ -7,6 +7,12 @@ import { checkRateLimit, getIPFromRequest } from "@/lib/rate-limit";
 // Zod schema สำหรับ validate ข้อมูล
 const registerSchema = z.object({
   name: z.string().min(1, "กรุณากรอกชื่อ"),
+  username: z
+    .string()
+    .trim()
+    .min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัว")
+    .max(20, "ชื่อผู้ใช้ต้องไม่เกิน 20 ตัว")
+    .regex(/^[a-zA-Z0-9_.]+$/, "ชื่อผู้ใช้ใช้ได้เฉพาะ a-z, 0-9, _ และ ."),
   email: z.string().email("รูปแบบอีเมลไม่ถูกต้อง"),
   password: z
     .string()
@@ -39,6 +45,8 @@ export async function POST(request: Request) {
     }
 
     const { name, email, password } = result.data;
+    // เก็บ username เป็นตัวพิมพ์เล็กเสมอ เพื่อให้ล็อกอินได้ไม่ต้องสนตัวพิมพ์
+    const username = result.data.username.toLowerCase();
 
     // ตรวจสอบว่าอีเมลซ้ำหรือไม่
     const existingUser = await prisma.user.findUnique({
@@ -52,6 +60,18 @@ export async function POST(request: Request) {
       );
     }
 
+    // ตรวจสอบว่า username ซ้ำหรือไม่
+    const existingUsername = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (existingUsername) {
+      return NextResponse.json(
+        { error: "ชื่อผู้ใช้นี้ถูกใช้แล้ว" },
+        { status: 400 }
+      );
+    }
+
     // Hash รหัสผ่าน
     const hashedPassword = await bcrypt.hash(password, 12);
 
@@ -59,6 +79,7 @@ export async function POST(request: Request) {
     const user = await prisma.user.create({
       data: {
         name,
+        username,
         email,
         hashedPassword,
         emailVerified: new Date(),

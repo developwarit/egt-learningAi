@@ -110,7 +110,7 @@ export function TypingCodeCard() {
             <div className="w-3 h-3 rounded-full bg-[#f9e2af]" />
             <div className="w-3 h-3 rounded-full bg-[#a6e3a1]" />
           </div>
-          <div className="flex gap-1 ml-4 overflow-x-auto">
+          <div className="ml-4 flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {tabs.map((tab) => (
               <button
                 key={tab}
@@ -123,7 +123,7 @@ export function TypingCodeCard() {
           </div>
         </div>
 
-        <div className="p-4 md:p-5 font-mono text-sm leading-6 bg-[#1e1e2e] text-[#cdd6f4] min-h-[200px] md:min-h-[240px] overflow-x-auto">
+        <div className="min-h-[200px] overflow-x-auto bg-[#1e1e2e] p-4 font-mono text-sm leading-6 text-[#cdd6f4] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:min-h-[240px] md:p-5">
           {displayedLines.map((line, i) => (
             <div key={i} className="flex">
               <span className="w-8 text-[#585b70] text-right mr-4 select-none text-sm">{i + 1}</span>

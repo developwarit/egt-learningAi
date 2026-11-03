@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   }
 
   if (!user.hashedPassword) {
-    return NextResponse.json({ error: "บัญชีนี้ไม่มีรหัสผ่าน (เข้าสู่ระบบด้วย Google)" }, { status: 400 });
+    return NextResponse.json({ error: "บัญชีนี้ยังไม่มีรหัสผ่าน กรุณาติดต่อผู้ดูแลระบบ" }, { status: 400 });
   }
 
   const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword);

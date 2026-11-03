@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import CourseDetailBar from "../../course-detail-bar";
+import { CheckCircle2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 function VideoPlayer() {
@@ -78,10 +80,12 @@ export default function NodejsModernWebPage() {
 
   return (
     <main className="min-h-screen bg-[#faf9f7]">
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5 py-6"><Link href="/courses/catalog" className="text-sm text-gray-500 hover:text-gray-900">← กลับ</Link></div></div>
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5"><div className="flex gap-8">
-        {[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"}].map(t=>(<button key={t.id} onClick={()=>setTab(t.id)} className={"py-4 text-sm font-medium border-b-2 "+(tab===t.id?"border-blue-600 text-blue-600":"border-transparent text-gray-500 hover:text-gray-900")}>{t.label}</button>))}
-      </div></div></div>
+      <CourseDetailBar
+        title="NodeJS สำหรับการพัฒนาเว็บสมัยใหม่"
+        tabs={[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"}]}
+        activeTab={tab}
+        onTabChange={setTab}
+      />
       <div className="mx-auto max-w-5xl px-5 py-8">
         {tab==="details"&&<div>
           <h1 className="text-4xl font-bold text-gray-900">NodeJS สำหรับการพัฒนาเว็บสมัยใหม่</h1>
@@ -92,7 +96,7 @@ export default function NodejsModernWebPage() {
           <VideoPlayer />
           
           <div className="mt-8 flex flex-wrap gap-6 rounded-2xl border border-gray-200 bg-white p-6">
-            <span className="text-sm text-gray-600">🕐 เร็วๆ นี้</span>
+            <span className="flex items-center gap-2 text-sm text-gray-600"><Clock className="h-4 w-4 text-gray-400" strokeWidth={2} />เร็วๆ นี้</span>
             <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">กำลังเตรียมเนื้อหา</span>
           </div>
 
@@ -104,9 +108,9 @@ export default function NodejsModernWebPage() {
           <div className="mt-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">คอร์สนี้เหมาะสำหรับใคร</h2>
             <div className="rounded-xl bg-blue-50 border border-blue-100 p-4 space-y-2">
-              <p className="text-gray-700">✅ ผู้เริ่มต้นที่ต้องการเรียน Backend</p>
-              <p className="text-gray-700">✅ ผู้ที่มีพื้นฐาน JavaScript แล้ว</p>
-              <p className="text-gray-700">✅ ผู้ที่ต้องการสร้าง REST API</p>
+              "<p className="flex items-start gap-2 text-gray-700"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" strokeWidth={2.5} />"ผู้เริ่มต้นที่ต้องการเรียน Backend</p>
+              "<p className="flex items-start gap-2 text-gray-700"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" strokeWidth={2.5} />"ผู้ที่มีพื้นฐาน JavaScript แล้ว</p>
+              "<p className="flex items-start gap-2 text-gray-700"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" strokeWidth={2.5} />"ผู้ที่ต้องการสร้าง REST API</p>
             </div>
           </div>
 
@@ -114,19 +118,19 @@ export default function NodejsModernWebPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-4">สิ่งที่จะได้รับจากคอร์สนี้</h2>
             <div className="space-y-3">
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">เข้าใจ Node.js และ Module System</p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">สร้าง REST API ด้วย Express.js</p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">เชื่อมต่อ Database และทำ Authentication</p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">สร้างโปรเจกต์จริงพร้อม Portfolio</p>
               </div>
             </div>

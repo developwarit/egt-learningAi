@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import CourseDetailBar from "../../course-detail-bar";
+import { CheckCircle2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const episodes = [
@@ -79,10 +81,12 @@ export default function FigmaToCodePage() {
 
   return (
     <main className="min-h-screen bg-[#faf9f7]">
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5 py-6"><Link href="/courses/catalog" className="text-sm text-gray-500 hover:text-gray-900">← กลับ</Link></div></div>
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5"><div className="flex gap-8">
-        {[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"}].map(t=>(<button key={t.id} onClick={()=>setTab(t.id)} className={"py-4 text-sm font-medium border-b-2 "+(tab===t.id?"border-blue-600 text-blue-600":"border-transparent text-gray-500 hover:text-gray-900")}>{t.label}</button>))}
-      </div></div></div>
+      <CourseDetailBar
+        title="Figma to Code"
+        tabs={[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"}]}
+        activeTab={tab}
+        onTabChange={setTab}
+      />
       <div className="mx-auto max-w-5xl px-5 py-8">
         {tab==="details"&&<div>
           <h1 className="text-4xl font-bold text-gray-900">Figma to Code</h1>
@@ -93,7 +97,7 @@ export default function FigmaToCodePage() {
           <VideoPlayer />
           
           <div className="mt-8 flex flex-wrap gap-6 rounded-2xl border border-gray-200 bg-white p-6">
-            <span className="text-sm text-gray-600">🕐 เร็วๆ นี้</span>
+            <span className="flex items-center gap-2 text-sm text-gray-600"><Clock className="h-4 w-4 text-gray-400" strokeWidth={2} />เร็วๆ นี้</span>
             <span className="rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">กำลังเตรียมเนื้อหา</span>
           </div>
 
@@ -107,7 +111,7 @@ export default function FigmaToCodePage() {
           <div className="mt-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">คอร์สนี้เหมาะสำหรับใคร</h2>
             <div className="rounded-xl bg-blue-50 border border-blue-100 p-4">
-              <p className="text-gray-700">✅ เหมาะสำหรับคนที่มีพื้นฐาน HTML CSS JS แล้ว แต่ยังรู้สึกไม่ค่อยมั่นใจในการเขียน HTML CSS JS อยากจะอัพเกรดทักษะให้ชำนาญมากยิ่งขึ้น</p>
+              <p className="flex items-start gap-2 text-gray-700"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-600" strokeWidth={2.5} />เหมาะสำหรับคนที่มีพื้นฐาน HTML CSS JS แล้ว แต่ยังรู้สึกไม่ค่อยมั่นใจในการเขียน HTML CSS JS อยากจะอัพเกรดทักษะให้ชำนาญมากยิ่งขึ้น</p>
             </div>
           </div>
 
@@ -116,23 +120,23 @@ export default function FigmaToCodePage() {
             <h2 className="text-xl font-bold text-gray-900 mb-4">สิ่งที่จะได้รับจากคอร์สนี้</h2>
             <div className="space-y-3">
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">ได้เรียนรู้และเข้าใจการแปลง Design เป็น Code (หน้าเว็บ) ซึ่งเป็นทักษะที่สำคัญมาก</p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">ได้เรียนรู้และเข้าใจหลักการวางโครงสร้างเว็บไซต์ที่ถูกต้อง</p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">ได้เรียนรู้และเข้าใจการเขียน Media Query เพื่อทำ Responsive ให้กับเว็บไซต์</p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">ได้เรียนรู้และเข้าใจการนำ JavaScript มาใช้สำหรับเพิ่มลูกเล่นให้เว็บไซต์มีความน่าสนใจมากยิ่งขึ้น</p>
               </div>
               <div className="flex items-start gap-3 rounded-xl bg-green-50 border border-green-100 p-4">
-                <span className="text-green-500 mt-0.5">✅</span>
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-500" strokeWidth={2.2} />
                 <p className="text-gray-700">ได้เรียนรู้เทคนิคและวิธีการแก้ไขปัญหาต่างๆ ที่จะต้องเจอ</p>
               </div>
             </div>

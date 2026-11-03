@@ -47,10 +47,12 @@ export default function BlogPage() {
       {/* Header */}
       <header className="fixed inset-x-0 top-0 z-50 border-b border-gray-200 bg-[#faf9f7]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
-          <Link href="/" className="transition hover:opacity-80"><img src="/logo.svg" alt="Warit Panyeam" className="h-8" /></Link>
+          <Link href="/courses" className="text-lg font-bold tracking-tight text-gray-900">
+            EGT-Learning
+          </Link>
           <Link
-            href="/"
-            className="flex items-center gap-2 text-sm text-gray-900 transition hover:text-gray-900"
+            href="/courses"
+            className="flex items-center gap-2 text-sm text-gray-600 transition hover:text-gray-900"
           >
             <svg
               className="h-4 w-4"
@@ -78,7 +80,7 @@ export default function BlogPage() {
               <h1 className="text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
                 บทความที่น่าสนใจ
               </h1>
-              <span className="text-sm text-gray-900">
+              <span className="text-sm text-gray-500">
                 {filtered.length} บทความ
               </span>
             </div>
@@ -101,21 +103,15 @@ export default function BlogPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="ค้นหาหัวข้อบทความ"
-                className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none transition focus:border-gray-400"
+                className="min-w-0 flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition focus:border-gray-400 focus:bg-white"
               />
-              <button
-                type="button"
-                className="rounded-xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-600"
-              >
-                แสดงผลลัพธ์
-              </button>
               <button
                 type="button"
                 onClick={() => {
                   setSearch("");
                   setActiveTag("ทั้งหมด");
                 }}
-                className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-900 transition hover:text-gray-900 hover:bg-gray-50"
+                className="shrink-0 rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
               >
                 ล้างตัวกรอง
               </button>
@@ -135,8 +131,8 @@ export default function BlogPage() {
                 onClick={() => setActiveTag(tag)}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                   activeTag === tag
-                    ? "bg-blue-500 text-white"
-                    : "border border-gray-200 bg-gray-50 text-gray-900 hover:text-gray-900 hover:bg-gray-100"
+                    ? "bg-blue-600 text-white"
+                    : "border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
               >
                 {tag}
@@ -173,7 +169,7 @@ export default function BlogPage() {
                         {article.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-900"
+                            className="rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600"
                           >
                             {tag}
                           </span>
@@ -181,7 +177,7 @@ export default function BlogPage() {
                       </div>
 
                       {/* Date */}
-                      <p className="mt-3 text-sm text-gray-900">
+                      <p className="mt-3 text-sm text-gray-500">
                         {article.date}
                       </p>
 
@@ -191,14 +187,14 @@ export default function BlogPage() {
                       </h2>
 
                       {/* Description */}
-                      <p className="mt-3 text-sm leading-relaxed text-gray-900">
+                      <p className="mt-3 text-sm leading-relaxed text-gray-600">
                         {article.description}
                       </p>
                     </div>
 
                     {/* Footer */}
                     <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-4">
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-gray-500">
                         โดย {article.author}
                       </span>
                       <span className="flex items-center gap-1 text-sm font-semibold text-blue-600 group-hover:gap-2 transition-all">
@@ -226,14 +222,14 @@ export default function BlogPage() {
             {/* Empty state */}
             {filtered.length === 0 && (
               <div className="py-16 text-center">
-                <p className="text-lg text-gray-900">ไม่พบบทความที่ค้นหา</p>
+                <p className="text-lg text-gray-700">ไม่พบบทความที่ค้นหา</p>
                 <button
                   type="button"
                   onClick={() => {
                     setSearch("");
                     setActiveTag("ทั้งหมด");
                   }}
-                  className="mt-4 text-sm text-blue-600 hover:underline"
+                  className="mt-4 text-sm font-medium text-blue-600 hover:underline"
                 >
                   ล้างตัวกรอง
                 </button>
@@ -242,6 +238,19 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white">
+        <div className="mx-auto flex max-w-5xl flex-col gap-4 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
+          <p className="text-sm text-gray-500">
+            © {new Date().getFullYear()} EGT-Learning
+          </p>
+          <nav className="flex flex-wrap gap-5 text-sm text-gray-600">
+            <Link href="/courses/catalog" className="transition hover:text-gray-900">คอร์สทั้งหมด</Link>
+            <Link href="/blog" className="transition hover:text-gray-900">บทความ</Link>
+            <Link href="/contact" className="transition hover:text-gray-900">ติดต่อ</Link>
+          </nav>
+        </div>
+      </footer>
     </main>
   );
 }

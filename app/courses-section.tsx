@@ -34,9 +34,9 @@ export function CoursesSection() {
             อัปสกิลด้วยเครื่องมือมากมาย
           </p>
           <h2 className="mt-4 text-4xl font-black leading-tight text-white sm:text-5xl">
-            AI + Data +
+            EGT
             <br />
-            Software Dev 🚀
+            LEARNING 🚀
           </h2>
           <p className="mt-2 text-lg font-semibold text-orange-400">
             เรียนรู้ ทำวันเรียน ยิงยาวได้ภายใน 5 เดือน

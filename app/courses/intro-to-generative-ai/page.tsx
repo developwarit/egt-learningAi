@@ -51,7 +51,7 @@ export default function CourseDetailPage() {
     <main className="min-h-screen bg-[#f0f4ff] text-gray-900">
       <header className="fixed inset-x-0 top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex items-center justify-between px-5 py-3">
-          <Link href="/courses" className="font-bold text-lg text-orange-500">dev.warit</Link>
+          <Link href="/courses" className="font-bold text-lg text-orange-500">EGT-Learning</Link>
           <div className="flex items-center gap-1 rounded-full border border-gray-200 bg-white px-1 py-1">
             <span className="rounded-full px-4 py-1.5 text-sm font-medium text-gray-500">แชร์ Course</span>
             <span className="rounded-full bg-blue-600 px-4 py-1.5 text-sm font-medium text-white">เนื้อหาทั้งหมด</span>

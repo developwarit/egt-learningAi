@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import CourseDetailBar from "../../course-detail-bar";
+import { BookOpen, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const timestamps = [
@@ -133,16 +135,18 @@ export default function HtmlCssMasterfulPage() {
 
   return (
     <main className="min-h-screen bg-[#faf9f7]">
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5 py-6"><Link href="/courses/catalog" className="text-sm text-gray-500 hover:text-gray-900">← กลับ</Link></div></div>
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5"><div className="flex gap-8">
-        {[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"},{id:"reviews",label:"รีวิวผู้เรียน"}].map(t=>(<button key={t.id} onClick={()=>setTab(t.id)} className={"py-4 text-sm font-medium border-b-2 "+(tab===t.id?"border-blue-600 text-blue-600":"border-transparent text-gray-500 hover:text-gray-900")}>{t.label}</button>))}
-      </div></div></div>
+      <CourseDetailBar
+        title="HTML CSS Masterful"
+        tabs={[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"},{id:"reviews",label:"รีวิวผู้เรียน"}]}
+        activeTab={tab}
+        onTabChange={setTab}
+      />
       <div className="mx-auto max-w-5xl px-5 py-8">
         {tab==="details"&&<div>
-          <h1 className="text-4xl font-bold text-gray-900">รายละเอียดคอร์ส</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">HTML CSS Masterful</h1>
           <Link href="/instructor/milerdev" className="mt-3 flex items-center gap-2 group"><div className="h-10 w-10 shrink-0 overflow-hidden rounded-full ring-2 ring-transparent transition group-hover:ring-blue-300"><img src="/milerdev-profile.png" alt="MilerDev" className="h-full w-full object-cover" /></div><p className="text-sm text-gray-500">จาก <span className="font-semibold text-gray-700 group-hover:text-blue-600 transition">MilerDev</span></p></Link>
           <p className="mt-6 text-lg text-gray-700 leading-relaxed">คอร์สเรียน HTML CSS Masterful คอร์สเรียนที่พัฒนาทุกคนไปสู่การเขียนโค้ด HTML CSS พื้นฐานที่สำคัญที่สุด สำหรับการพัฒนาเว็บ พร้อมทั้งเรียนรู้การใช้ CSS ในการตกแต่งเว็บไซต์พร้อมระบบ Responsive และจัด Layout ด้วย Flexbox และ Grid</p>
-          <div className="mt-8 flex flex-wrap gap-6 rounded-2xl border border-gray-200 bg-white p-6"><span className="text-sm text-gray-600">🕐 14 บทเรียน · 4 ชม. 4 นาที</span><span className="text-sm text-gray-600">📚 รวม 5 ห้อง</span><span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">ฟรี</span></div>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-2xl border border-gray-200 bg-white px-6 py-4"><span className="flex items-center gap-2 text-sm text-gray-600"><Clock className="h-4 w-4 text-gray-400" strokeWidth={2} />14 บทเรียน · 4 ชม. 4 นาที</span><span className="flex items-center gap-2 text-sm text-gray-600"><BookOpen className="h-4 w-4 text-gray-400" strokeWidth={2} />รวม 5 ห้อง</span><span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">ฟรี</span></div>
           <div className="mt-8"><h2 className="text-xl font-bold text-gray-900 mb-4">วิดีโอการสอน</h2><VideoPlayer videoId="EsIk1NO24s0" tsList={timestamps} startTime={61} endTime={14580} durationLabel="4:03:00" /></div>
         </div>}
         {tab==="curriculum"&&<div>

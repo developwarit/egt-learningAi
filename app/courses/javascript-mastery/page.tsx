@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import CourseDetailBar from "../../course-detail-bar";
+import { BookOpen, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const timestamps = [
@@ -169,16 +171,18 @@ export default function JavaScriptMasteryPage() {
 
   return (
     <main className="min-h-screen bg-[#faf9f7]">
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5 py-6"><Link href="/courses/catalog" className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition">← กลับ</Link></div></div>
-      <div className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-5xl px-5"><div className="flex gap-8">
-        {[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"},{id:"reviews",label:"รีวิวผู้เรียน"}].map(t=>(<button key={t.id} onClick={()=>setTab(t.id)} className={"py-4 text-sm font-medium border-b-2 "+(tab===t.id?"border-blue-600 text-blue-600":"border-transparent text-gray-500 hover:text-gray-900")}>{t.label}</button>))}
-      </div></div></div>
+      <CourseDetailBar
+        title="JavaScript Mastery"
+        tabs={[{id:"details",label:"รายละเอียดคอร์ส"},{id:"curriculum",label:"เนื้อหาคอร์ส"},{id:"reviews",label:"รีวิวผู้เรียน"}]}
+        activeTab={tab}
+        onTabChange={setTab}
+      />
       <div className="mx-auto max-w-5xl px-5 py-8">
         {tab==="details"&&<div>
-          <h1 className="text-4xl font-bold text-gray-900">รายละเอียดคอร์ส</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">JavaScript Mastery</h1>
           <Link href="/instructor/milerdev" className="mt-3 flex items-center gap-2 group"><div className="h-10 w-10 shrink-0 overflow-hidden rounded-full ring-2 ring-transparent transition group-hover:ring-blue-300"><img src="/milerdev-profile.png" alt="MilerDev" className="h-full w-full object-cover" /></div><p className="text-sm text-gray-500">จาก <span className="font-semibold text-gray-700 group-hover:text-blue-600 transition">MilerDev</span></p></Link>
           <p className="mt-6 text-lg text-gray-700 leading-relaxed">คอร์ส JavaScript Mastery คอร์สที่จะพาทุกคนมาเป็น "เซียน" เขียนเว็บด้วย JavaScript ซึ่งเป็นอีกหนึ่งภาษาที่มีความสำคัญอย่างมากในการเป็น Web Developer ในคอร์สจะพาทุกคนมาเรียนรู้ตั้งแต่พื้นฐานสำคัญหลักๆ ใน JavaScript ที่จะต้องรู้, เข้าใจเรื่องของ DOM, และจะพาทุกคนมาทำ Workshop แบบจัดเต็ม รวมเนื้อหาในคอร์สทั้งหมดเน้นๆ 50 กว่าบทเรียน</p>
-          <div className="mt-8 flex flex-wrap gap-6 rounded-2xl border border-gray-200 bg-white p-6"><span className="text-sm text-gray-600">🕐 55 บทเรียน · 6 ชม. 50 นาที</span><span className="text-sm text-gray-600">📚 รวม 7 ห้อง</span><span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">ฟรี</span></div>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-2xl border border-gray-200 bg-white px-6 py-4"><span className="flex items-center gap-2 text-sm text-gray-600"><Clock className="h-4 w-4 text-gray-400" strokeWidth={2} />55 บทเรียน · 6 ชม. 50 นาที</span><span className="flex items-center gap-2 text-sm text-gray-600"><BookOpen className="h-4 w-4 text-gray-400" strokeWidth={2} />รวม 7 ห้อง</span><span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">ฟรี</span></div>
           <div className="mt-8"><h2 className="text-xl font-bold text-gray-900 mb-4">วิดีโอการสอน</h2><VideoPlayer videoId="sNicJct3dcI" tsList={timestamps} startTime={38} endTime={13513} durationLabel="3:45:13" /></div>
         </div>}
         {tab==="curriculum"&&<div>

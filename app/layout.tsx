@@ -10,7 +10,7 @@ const kanit = Kanit({
 });
 
 export const metadata: Metadata = {
-  title: "dev.warit",
+  title: "EGT-LearningAi",
   icons: {
     icon: "/favicon.svg",
   },

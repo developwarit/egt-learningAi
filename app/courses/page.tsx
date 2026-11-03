@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TypingCodeCard } from "../typing-code-card";
-import { Bot, ChartNoAxesCombined, Laptop, Rocket, Sprout, GraduationCap, Zap, Target, Code, Palette, Database, Cpu } from "lucide-react";
+import { ArrowRight, Bot, BookOpen, Bug, ChartNoAxesCombined, Code, Cpu, Database, FolderKanban, Globe, GraduationCap, Hammer, Laptop, Lightbulb, Palette, PenLine, Rocket, Send, Settings, Sprout, Target, Zap } from "lucide-react";
 
 const courseTabs = [
   { id: "software", label: "Software 💻", color: "bg-blue-500" },
@@ -15,13 +15,13 @@ const courses = [
   {
     title: "HTML CSS Masterful",
     slug: "html-css-masterful",
-    description: "เรียนรู้ทุกพื้นฐาน HTML CSS พัฒนาทุกสไตล์Learn HTML CSS พื้นฐานที่สำคัญที่สุด...",
+    description: "ปูพื้นฐาน HTML และ CSS ตั้งแต่เริ่มต้น จนสร้างหน้าเว็บที่จัดวางได้จริง",
     tags: ["html", "css"],
     lessons: 92,
     duration: "8 ชม. 19 นาที",
     price: "ฟรี",
     status: "เปิดให้เรียนแล้ว",
-    image: "/htmlcss_im.png",
+    image: "/courses/html-css-masterful.jpg",
   },
   {
     title: "JavaScript Mastery",
@@ -122,7 +122,7 @@ function FadeInWhenVisible({ children, delay = 0 }: { children: React.ReactNode;
 function HoverCard({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
-      whileHover={{ y: -8, scale: 1.02 }}
+      whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
       {children}
@@ -175,7 +175,7 @@ export default function CoursesPage() {
             href="/"
 className="flex items-center gap-1"
           >
-            <span className="text-lg font-bold tracking-tight text-gray-900">dev.warit</span>
+            <span className="text-lg font-bold tracking-tight text-gray-900">EGT-Learning</span>
           </Link>
           <div className="hidden md:flex items-center gap-1">
             <Link href="/courses" className="rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-100">
@@ -184,9 +184,9 @@ className="flex items-center gap-1"
             <Link href="/blog" className="rounded-full px-4 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-900">
               บทความ
             </Link>
-            <span className="rounded-full px-4 py-2 text-sm font-medium text-gray-300 cursor-not-allowed">
-              เกี่ยวกับเรา
-            </span>
+            <Link href="/community" className="rounded-full px-4 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-900">
+              ชุมชน
+            </Link>
             <span className="rounded-full px-4 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-900">
               <Link href="/contact">ติดต่อ</Link>
             </span>
@@ -260,9 +260,9 @@ className="flex items-center gap-1"
             <Link href="/blog" className="block rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-900">
               บทความ
             </Link>
-            <span className="block rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-300 cursor-not-allowed">
-              เกี่ยวกับเรา
-            </span>
+            <Link href="/community" className="block rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-900">
+              ชุมชน
+            </Link>
             <Link href="/contact" className="block rounded-lg px-4 py-3 text-left text-sm font-medium text-gray-700 transition hover:bg-gray-100 hover:text-gray-900">
               ติดต่อ
             </Link>
@@ -274,16 +274,20 @@ className="flex items-center gap-1"
       {/* Hero Section */}
       <section className="relative pt-32 pb-16">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-          <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center">
                         {/* Left Content */}
             <div>
-              <p className="text-sm font-semibold text-orange-600">
-                🎓 สำหรับนักศึกษาวิทยาลัยเทคนิค กฟผ.แม่เมาะ
+              <p className="flex items-center gap-2 text-sm font-medium text-gray-500">
+                <GraduationCap size={16} strokeWidth={2} aria-hidden />
+                สำหรับนักศึกษาวิทยาลัยเทคนิค กฟผ.แม่เมาะ
               </p>
               <h1 className="mt-4 text-2xl font-black leading-tight text-gray-900 sm:text-4xl md:text-5xl lg:text-6xl">
-                AI + Data +
-                <br />
-                Software Dev <img src="/rocket.svg" alt="Rocket" className="inline-block h-8 w-8 sm:h-12 sm:w-12" />
+                EGT-Learning<img
+                  src="/rocket.svg"
+                  alt=""
+                  aria-hidden
+                  className="ml-3 inline-block h-7 w-7 align-middle sm:h-10 sm:w-10"
+                />
               </h1>
               <p className="mt-2 text-xl font-semibold text-orange-600">
                 เรียนฟรี ลงมือทำจริง สร้างทักษะที่ใช้ได้จริง
@@ -294,18 +298,19 @@ className="flex items-center gap-1"
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  className="rounded-xl bg-orange-500 px-6 py-3 text-sm font-bold text-gray-900 transition hover:bg-orange-600"
+                <Link
+                  href="/courses/catalog"
+                  className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 text-sm font-bold text-gray-900 transition hover:bg-orange-600"
                 >
-                  <img src="/rocket.svg" alt="Rocket" className="inline-block h-6 w-6 sm:h-8 sm:w-8 lg:h-10 lg:w-10" /> เริ่มเรียนฟรี
-                </button>
+                  เริ่มเรียนฟรี
+                  <ArrowRight size={16} strokeWidth={2.5} aria-hidden />
+                </Link>
               </div>
             </div>
 
             {/* Right Content - Code Editor */}
-            <div className="flex justify-center lg:justify-end">
-              <div className="w-full overflow-x-auto"><TypingCodeCard /></div>
+            <div className="flex min-w-0 justify-center lg:justify-end">
+              <div className="w-full min-w-0 max-w-md"><TypingCodeCard /></div>
             </div>
           </div>
         </div>
@@ -348,8 +353,8 @@ className="flex items-center gap-1"
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12">
-            <p className="text-sm font-semibold text-blue-600">What You'll Learn</p>
-            <h2 className="mt-3 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-[-0.02em] text-gray-900">
+            <p className="text-sm font-medium text-gray-500">What You'll Learn</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
               เรียนอะไรบ้าง?
             </h2>
           </div>
@@ -393,8 +398,8 @@ className="flex items-center gap-1"
       {/* Motivational Section */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-10 text-center">
-          <p className="text-sm font-semibold text-orange-600">Why This Program?</p>
-          <h2 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
+          <p className="text-sm font-medium text-gray-500">Why This Program?</p>
+          <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
             ไม่ได้ทำมาเพื่อให้คุณจำโค้ด
           </h2>
           <p className="mt-4 text-2xl font-semibold text-orange-600">
@@ -422,8 +427,8 @@ className="flex items-center gap-1"
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12 flex items-end justify-between">
             <div>
-              <p className="text-sm font-semibold text-blue-600">คอร์สเรียนล่าสุด</p>
-              <h2 className="mt-3 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-[-0.02em] text-gray-900">
+              <p className="text-sm font-medium text-gray-500">คอร์สเรียนล่าสุด</p>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                 เลือกจากเนื้อหา และ บททดลองจริง
               </h2>
             </div>
@@ -439,7 +444,7 @@ className="flex items-center gap-1"
                 className="group block rounded-2xl border border-gray-200 bg-white overflow-hidden transition hover:border-gray-300 hover:shadow-lg"
                 >
                 {/* Course Image */}
-                <div className="relative h-44 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                <div className="relative h-44 overflow-hidden bg-gray-100">
                   <img 
                     src={course.image} 
                     alt={course.title}
@@ -447,8 +452,7 @@ className="flex items-center gap-1"
                   />
                   {/* Free Badge */}
                   <div className="absolute top-3 left-3">
-                    <span className="flex items-center gap-1.5 rounded-full bg-green-500 px-3 py-1 text-xs font-semibold text-white">
-                      <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                    <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-gray-900 backdrop-blur">
                       ดูในเบื้องต้นฟรี
                     </span>
                   </div>
@@ -487,7 +491,7 @@ className="flex items-center gap-1"
                   {/* Price + CTA */}
                   <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
                     <span className="text-xl font-bold text-gray-900">{course.price === "ฟรี" ? "ฟรี" : `฿${course.price}`}</span>
-                    <span className="text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition">
+                    <span className="text-sm font-semibold text-blue-600 transition group-hover:text-blue-700">
                       ดูรายละเอียด →
                     </span>
                   </div>
@@ -507,8 +511,8 @@ className="flex items-center gap-1"
       {/* Why We Built This */}
       <section className="py-16 bg-[#faf9f7]">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-10 text-center">
-          <p className="text-sm font-semibold text-blue-600">Why We Built This</p>
-          <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
+          <p className="text-sm font-medium text-gray-500">Why We Built This</p>
+          <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
             ทำไมเราถึงสร้างเว็บไซต์นี้?
           </h2>
           <p className="mt-6 max-w-2xl mx-auto text-base leading-relaxed text-gray-600">
@@ -534,15 +538,15 @@ className="flex items-center gap-1"
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12 text-center">
-            <p className="text-sm font-semibold text-orange-600">Who Is This For?</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <p className="text-sm font-medium text-gray-500">Who Is This For?</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
               เว็บนี้เหมาะกับใคร?
             </h2>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border border-gray-200 bg-[#faf9f7] p-6 transition hover:border-gray-300 hover:shadow-md">
-              <Sprout size={36} strokeWidth={1.8} className="text-green-600" />
+              <Sprout size={36} strokeWidth={1.8} className="text-gray-700" />
               <h3 className="mt-4 text-lg font-bold text-gray-900">มือใหม่</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 ยังไม่เคยเขียนโค้ด และไม่รู้ว่าจะเริ่มจากตรงไหน
@@ -550,7 +554,7 @@ className="flex items-center gap-1"
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-[#faf9f7] p-6 transition hover:border-gray-300 hover:shadow-md">
-              <GraduationCap size={36} strokeWidth={1.8} className="text-blue-600" />
+              <GraduationCap size={36} strokeWidth={1.8} className="text-gray-700" />
               <h3 className="mt-4 text-lg font-bold text-gray-900">นักศึกษา</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 อยากฝึกทักษะเพิ่มเติมและมีโปรเจกต์ใส่ Portfolio
@@ -558,7 +562,7 @@ className="flex items-center gap-1"
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-[#faf9f7] p-6 transition hover:border-gray-300 hover:shadow-md">
-              <Zap size={36} strokeWidth={1.8} className="text-yellow-500" />
+              <Zap size={36} strokeWidth={1.8} className="text-gray-700" />
               <h3 className="mt-4 text-lg font-bold text-gray-900">Vibe Coder</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 อยากใช้ AI ช่วยสร้าง ทดลอง และต่อยอดโปรเจกต์
@@ -566,7 +570,7 @@ className="flex items-center gap-1"
             </div>
 
             <div className="rounded-2xl border border-gray-200 bg-[#faf9f7] p-6 transition hover:border-gray-300 hover:shadow-md">
-              <Target size={36} strokeWidth={1.8} className="text-orange-500" />
+              <Target size={36} strokeWidth={1.8} className="text-gray-700" />
               <h3 className="mt-4 text-lg font-bold text-gray-900">คนที่อยากสร้างโปรเจกต์</h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-600">
                 มีไอเดียแต่ยังไม่รู้ว่าจะเปลี่ยนไอเดียให้เป็นโปรแกรมได้อย่างไร
@@ -580,8 +584,8 @@ className="flex items-center gap-1"
       <section className="py-16 bg-[#faf9f7]">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12 text-center">
-            <p className="text-sm font-semibold text-blue-600">Learning Path</p>
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
+            <p className="text-sm font-medium text-gray-500">Learning Path</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                Learning Roadmap
             </h2>
             <p className="mt-4 text-gray-600">จาก 0 → สร้างโปรเจกต์ได้</p>
@@ -591,17 +595,17 @@ className="flex items-center gap-1"
             {/* Roadmap Items */}
             <div className="space-y-6">
               {[
-                { step: "START", label: "เริ่มต้น", icon: "🎯" },
-                { step: "1", label: "พื้นฐาน Programming", icon: "💻" },
-                { step: "2", label: "Web Development / Data", icon: "🌐" },
-                { step: "3", label: "Frontend / Analytics", icon: "🎨" },
-                { step: "4", label: "Backend / Database", icon: "⚙️" },
-                { step: "5", label: "Build Project", icon: "🔨" },
-                { step: "6", label: "Portfolio", icon: "📁" },
+                { step: "START", label: "เริ่มต้น", icon: Target },
+                { step: "1", label: "พื้นฐาน Programming", icon: Code },
+                { step: "2", label: "Web Development / Data", icon: Globe },
+                { step: "3", label: "Frontend / Analytics", icon: Palette },
+                { step: "4", label: "Backend / Database", icon: Settings },
+                { step: "5", label: "Build Project", icon: Hammer },
+                { step: "6", label: "Portfolio", icon: FolderKanban },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-500 text-white font-bold">
-                    {item.icon}
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700">
+                    <item.icon size={20} strokeWidth={1.8} aria-hidden />
                   </div>
                   <div className="flex-1 rounded-xl border border-gray-200 bg-white p-4">
                     <p className="text-sm text-gray-500">Step {item.step}</p>
@@ -618,8 +622,8 @@ className="flex items-center gap-1"
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12 text-center">
-            <p className="text-sm font-semibold text-purple-600">Vibe Coding</p>
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
+            <p className="text-sm font-medium text-gray-500">Vibe Coding</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                Vibe Coding
             </h2>
             <p className="mt-4 text-gray-600">จากไอเดีย → สู่โปรเจกต์จริง ด้วย AI</p>
@@ -627,23 +631,21 @@ className="flex items-center gap-1"
 
           <div className="space-y-4">
             {[
-              { num: "01", title: "Vibe Coding คืออะไร?", icon: "💡", desc: "ทำความเข้าใจแนวคิด และรู้ว่า AI ช่วยเราได้อย่างไร" },
-              { num: "02", title: "เริ่มสร้างเว็บไซต์ด้วย AI", icon: "🌐", desc: "สร้างเว็บไซต์แรกตั้งแต่ไอเดียจนเป็นหน้าเว็บจริง" },
-              { num: "03", title: "เขียน Prompt ให้ AI เข้าใจ", icon: "✍️", desc: "เรียนรู้วิธีสื่อสารกับ AI เพื่อให้ได้ผลลัพธ์ที่ต้องการ" },
-              { num: "04", title: "Debug ด้วย AI", icon: "🐛", desc: "เมื่อ Code มีปัญหา เรียนรู้วิธีหาและแก้ Bug อย่างเป็นระบบ" },
-              { num: "05", title: "เข้าใจ Code ที่ AI สร้าง", icon: "📖", desc: "อ่าน วิเคราะห์ และปรับ Code ให้เป็น Code ที่เราเข้าใจ" },
+              { num: "01", title: "Vibe Coding คืออะไร?", icon: Lightbulb, desc: "ทำความเข้าใจแนวคิด และรู้ว่า AI ช่วยเราได้อย่างไร" },
+              { num: "02", title: "เริ่มสร้างเว็บไซต์ด้วย AI", icon: Globe, desc: "สร้างเว็บไซต์แรกตั้งแต่ไอเดียจนเป็นหน้าเว็บจริง" },
+              { num: "03", title: "เขียน Prompt ให้ AI เข้าใจ", icon: PenLine, desc: "เรียนรู้วิธีสื่อสารกับ AI เพื่อให้ได้ผลลัพธ์ที่ต้องการ" },
+              { num: "04", title: "Debug ด้วย AI", icon: Bug, desc: "เมื่อ Code มีปัญหา เรียนรู้วิธีหาและแก้ Bug อย่างเป็นระบบ" },
+              { num: "05", title: "เข้าใจ Code ที่ AI สร้าง", icon: BookOpen, desc: "อ่าน วิเคราะห์ และปรับ Code ให้เป็น Code ที่เราเข้าใจ" },
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-[#faf9f7] p-5 transition hover:border-purple-300 hover:shadow-md group">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-purple-500 text-white text-xl font-bold">
+              <div key={i} className="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 transition hover:border-gray-300 hover:shadow-md">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-xl font-bold text-white">
                   {item.num}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-gray-900">{item.title}</h3>
                   <p className="text-sm text-gray-600">{item.desc}</p>
                 </div>
-                <span className="text-sm font-semibold text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                  
-                </span>
+                <item.icon size={20} strokeWidth={1.8} className="hidden shrink-0 text-gray-400 sm:block" aria-hidden />
               </div>
             ))}
           </div>
@@ -655,8 +657,8 @@ className="flex items-center gap-1"
       <section className="py-16 bg-[#faf9f7]">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12 text-center">
-            <p className="text-sm font-semibold text-green-600">Real Projects</p>
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
+            <p className="text-sm font-medium text-gray-500">Real Projects</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                จากการเรียน → สู่การสร้าง
             </h2>
             <p className="mt-4 text-gray-600">เรียนรู้จากการลงมือทำ และเปลี่ยนความรู้ให้กลายเป็นผลงานจริง</p>
@@ -674,19 +676,17 @@ className="flex items-center gap-1"
                 </div>
                 <div className="p-5">
                   <h3 className="text-lg font-bold text-gray-900">{project.title}</h3>
-                  <div className="flex items-center gap-2 mt-1"><p className="text-xs text-purple-600 font-medium">{project.tech}</p><span className="flex items-center gap-1 text-xs text-green-600"><span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>{project.status}</span></div>
+                  <div className="mt-2 flex items-center justify-between gap-2"><p className="text-xs font-medium text-gray-500">{project.tech}</p><span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">{project.status}</span></div>
                   <p className="mt-2 text-sm text-gray-600">{project.desc}</p>
-                  <a href="#" className="mt-4 inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700">
-                    ดูรายละเอียด →
-                  </a>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mt-8 text-center">
-            <a href="#" className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800">
-              ดูโปรเจกต์ทั้งหมด →
+            <a href="/contact" className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800">
+              อยากสร้างโปรเจกต์แบบนี้? คุยกับเรา
+              <ArrowRight size={16} strokeWidth={2} aria-hidden />
             </a>
           </div>
         </div>
@@ -695,16 +695,17 @@ className="flex items-center gap-1"
       {/* Submit Project CTA */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-10 text-center">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
             มีโปรเจกต์ของตัวเองแล้ว?
           </h2>
           <p className="mt-4 text-lg text-gray-600">
             ไม่ว่าจะเป็นโปรเจกต์เล็กหรือใหญ่
             มาแบ่งปันสิ่งที่คุณสร้าง และประสบการณ์ที่ได้เรียนรู้กับคนอื่น
           </p>
-          <a href="#" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600">
-            ส่งโปรเจกต์ของฉัน →
-          </a>
+          <Link href="/submit-project" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600">
+            ส่งโปรเจกต์ของฉัน
+            <ArrowRight size={18} strokeWidth={2.5} aria-hidden />
+          </Link>
         </div>
       </section>
 
@@ -713,8 +714,8 @@ className="flex items-center gap-1"
       <section className="py-16 bg-[#faf9f7]">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12 text-center">
-            <p className="text-sm font-semibold text-blue-600">Resources</p>
-            <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
+            <p className="text-sm font-medium text-gray-500">Resources</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                แหล่งเรียนรู้
             </h2>
             <p className="mt-4 text-gray-600">เครื่องมือและแหล่งเรียนรู้ที่ช่วยให้การเริ่มต้นง่ายขึ้น</p>
@@ -749,7 +750,7 @@ className="flex items-center gap-1"
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
           <div className="mb-12 text-center">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                ตัวอย่างผลงานนักเรียน
             </h2>
             <p className="mt-4 text-gray-600">
@@ -762,14 +763,22 @@ className="flex items-center gap-1"
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { name: "Major Cineplex", desc: "เว็บจองตั๋วภาพยนตร์" },
-              { name: "Neatly", desc: "เว็บไซต์จองที่พัก" },
-              { name: "Pet Sitter", desc: "บริการดูแลสัตว์เลี้ยง" },
-              { name: "Snake Game", desc: "เกมงูแบบ Online" },
+              { name: "Major Cineplex", desc: "เว็บจองตั๋วภาพยนตร์", image: "/showcase/major-cineplex.jpg" },
+              { name: "Neatly", desc: "เว็บไซต์จองที่พัก", image: "/showcase/neatly.png" },
+              { name: "Pet Sitter", desc: "บริการดูแลสัตว์เลี้ยง", image: "/showcase/pet-sitter.webp" },
+              { name: "Snake Game", desc: "เกมงูแบบ Online", image: "/showcase/snake-game.png" },
             ].map((project, i) => (
               <HoverCard key={i}><div className="rounded-2xl border border-gray-200 bg-[#faf9f7] overflow-hidden transition hover:border-gray-300 hover:shadow-md">
-                <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                  <Target size={48} strokeWidth={1.5} className="text-gray-400" />
+                <div className="flex h-40 items-center justify-center overflow-hidden bg-gray-100">
+                  {project.image ? (
+                    <img
+                      src={project.image}
+                      alt={project.name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Target size={48} strokeWidth={1.5} className="text-gray-400" />
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold text-gray-900">{project.name}</h3>
@@ -786,14 +795,12 @@ className="flex items-center gap-1"
         <div className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-10">
           <div className="grid gap-8 lg:grid-cols-[1fr_1.5fr] items-center">
             <div>
-              <span className="text-6xl text-blue-500 font-serif">"</span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 leading-tight">
+              <h2 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
                 พื้นฐานที่แกะแยกออกจากความกลัว
               </h2>
               <p className="mt-4 text-2xl font-bold text-blue-600">
                 รู้รอด ทำเป็นงาน พร้อมเติบโตไปกับ AI
               </p>
-              <span className="text-6xl text-blue-500 font-serif">"</span>
             </div>
             <div className="text-gray-600 leading-relaxed">
               <p>
@@ -812,9 +819,9 @@ className="flex items-center gap-1"
       {/* Share Knowledge */}
       <section className="py-16 bg-white">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-10 text-center">
-          <p className="text-sm font-semibold text-orange-600">Community</p>
-          <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
-            🤝 อยากช่วยแบ่งปัน?
+          <p className="text-sm font-medium text-gray-500">Community</p>
+          <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+            อยากช่วยแบ่งปัน?
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-base leading-relaxed text-gray-600">
             เว็บไซต์นี้เกิดจากการเรียนรู้และประสบการณ์จริง
@@ -822,12 +829,14 @@ className="flex items-center gap-1"
             สามารถส่งมาให้คนอื่นเรียนรู้ต่อได้
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <a href="#" className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600">
-              ✍️ แชร์ความรู้
-            </a>
-            <a href="#" className="inline-flex items-center gap-2 rounded-xl border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100">
-              🚀 ส่งโปรเจกต์
-            </a>
+            <Link href="/community" className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600">
+              <PenLine size={16} strokeWidth={2} aria-hidden />
+              แชร์ความรู้
+            </Link>
+            <Link href="/submit-project" className="inline-flex items-center gap-2 rounded-xl border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100">
+              <Send size={16} strokeWidth={2} aria-hidden />
+              ส่งโปรเจกต์
+            </Link>
           </div>
         </div>
       </section>
@@ -835,8 +844,8 @@ className="flex items-center gap-1"
       {/* Start From Zero */}
       <section className="py-16 bg-[#faf9f7]">
         <div className="mx-auto max-w-4xl px-5 sm:px-8 lg:px-10 text-center">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900">
-            🚀 เริ่มจากศูนย์ก็สร้างได้
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+            เริ่มจากศูนย์ก็สร้างได้
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-base leading-relaxed text-gray-600">
             ไม่จำเป็นต้องรู้ทุกอย่างก่อนเริ่ม
@@ -846,13 +855,38 @@ className="flex items-center gap-1"
             เพราะโปรเจกต์แรกไม่จำเป็นต้องสมบูรณ์แบบ
             แค่เริ่มสร้าง ก็ถือว่าเริ่มเรียนรู้แล้ว
           </p>
-          <a href="#" className="mt-8 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600">
-            🚀 เริ่มเรียนฟรี
+          <a href="/courses/catalog" className="mt-8 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-8 py-4 text-lg font-bold text-white transition hover:bg-orange-600">
+            เริ่มเรียนฟรี
+            <ArrowRight size={18} strokeWidth={2.5} aria-hidden />
           </a>
         </div>
       </section>
 
 
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10">
+          <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between">
+            <div className="max-w-xs">
+              <p className="text-lg font-bold tracking-tight text-gray-900">EGT-Learning</p>
+              <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                เรียน AI, Data และ Software Development ด้วยการลงมือทำโปรเจกต์จริง
+              </p>
+            </div>
+            <nav className="grid grid-cols-2 gap-x-12 gap-y-3 text-sm sm:grid-cols-3">
+              <Link href="/courses/catalog" className="text-gray-600 transition hover:text-gray-900">คอร์สทั้งหมด</Link>
+              <Link href="/blog" className="text-gray-600 transition hover:text-gray-900">บทความ</Link>
+              <Link href="/community" className="text-gray-600 transition hover:text-gray-900">ชุมชน</Link>
+              <Link href="/contact" className="text-gray-600 transition hover:text-gray-900">ติดต่อ</Link>
+              <Link href="/login" className="text-gray-600 transition hover:text-gray-900">เข้าสู่ระบบ</Link>
+              <Link href="/register" className="text-gray-600 transition hover:text-gray-900">สมัครเรียน</Link>
+            </nav>
+          </div>
+          <p className="mt-10 border-t border-gray-100 pt-6 text-xs text-gray-500">
+            © {new Date().getFullYear()} EGT-Learning
+          </p>
+        </div>
+      </footer>
       
     </main>
   );
