@@ -65,7 +65,7 @@ const courses = [
     duration: "เปิดให้เรียนแล้ว",
     price: "ฟรี",
     status: "เปิดให้เรียนแล้ว",
-    image: "/nodejs.png",
+    image: "/courses/nodejs-modern-web.jpg",
   },
   {
     title: "Vibe Coding for Non-Tech",
