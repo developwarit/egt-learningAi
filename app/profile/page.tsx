@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Check, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Upload, X } from "lucide-react";
 
 interface UserProfile {
   id: string;
@@ -153,6 +153,21 @@ export default function ProfilePage() {
     const timer = setTimeout(() => setResendIn((n) => n - 1), 1000);
     return () => clearTimeout(timer);
   }, [resendIn]);
+
+  // ปิด pop-up OTP ด้วยปุ่ม Esc
+  useEffect(() => {
+    if (passwordStep !== "otp") return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setPasswordStep("form");
+        setOtp(["", "", "", "", "", ""]);
+        setResendIn(0);
+        setPasswordFlash(null);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [passwordStep, setPasswordFlash]);
 
   const applyUser = (next: UserProfile) => {
     setUser(next);
@@ -608,70 +623,14 @@ export default function ProfilePage() {
         {/* Password */}
         <SettingsCard
           title="รหัสผ่าน"
-          description={
-            passwordStep === "otp"
-              ? "ยืนยันรหัส OTP ที่ส่งไปอีเมล เพื่อเปลี่ยนรหัสผ่าน"
-              : "เปลี่ยนรหัสผ่านเพื่อความปลอดภัยของบัญชี"
-          }
-          footer={
-            passwordStep === "otp"
-              ? "รหัส 6 หลักมีอายุ 10 นาที"
-              : "อย่างน้อย 8 ตัว พร้อมตัวพิมพ์ใหญ่ พิมพ์เล็ก และตัวเลข"
-          }
-          disabledHint={passwordStep === "otp" ? "กรอกรหัส 6 หลักให้ครบ" : "กรอกรหัสผ่านให้ครบตามเงื่อนไขเพื่อบันทึก"}
-          saveLabel={passwordStep === "otp" ? "ยืนยันและเปลี่ยนรหัสผ่าน" : "บันทึก"}
+          description="เปลี่ยนรหัสผ่านเพื่อความปลอดภัยของบัญชี"
+          footer="อย่างน้อย 8 ตัว พร้อมตัวพิมพ์ใหญ่ พิมพ์เล็ก และตัวเลข"
+          disabledHint="กรอกรหัสผ่านให้ครบตามเงื่อนไขเพื่อบันทึก"
           onSubmit={handlePasswordSave}
           saving={changingPassword || sendingOtp}
-          disabled={
-            passwordStep === "otp"
-              ? otp.join("").length !== 6
-              : !currentPassword || !passwordValid || !passwordsMatch
-          }
-          flash={passwordFlash}
+          disabled={!currentPassword || !passwordValid || !passwordsMatch || passwordStep === "otp"}
+          flash={passwordStep === "otp" ? null : passwordFlash}
         >
-          {passwordStep === "otp" ? (
-            <div className="max-w-sm">
-              <p className="text-sm text-gray-700">
-                ส่งรหัส 6 หลักไปที่ <span className="font-medium text-gray-900">{otpEmail || user.email}</span> แล้ว
-              </p>
-              <div className="mt-3 flex gap-2" onPaste={handleOtpPaste}>
-                {otp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => {
-                      otpRefs.current[i] = el;
-                    }}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(i, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                    inputMode="numeric"
-                    autoComplete={i === 0 ? "one-time-code" : "off"}
-                    maxLength={1}
-                    aria-label={`รหัส OTP หลักที่ ${i + 1}`}
-                    className="h-11 w-10 rounded-md border border-gray-300 bg-white text-center text-lg font-semibold text-gray-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)] outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
-                  />
-                ))}
-              </div>
-              <div className="mt-3 flex items-center gap-4 text-xs">
-                <button
-                  type="button"
-                  onClick={requestPasswordOtp}
-                  disabled={resendIn > 0 || sendingOtp}
-                  className="font-medium text-blue-600 transition hover:text-blue-700 disabled:cursor-not-allowed disabled:text-gray-400"
-                >
-                  {resendIn > 0 ? `ส่งรหัสใหม่ได้ใน ${resendIn} วิ` : "ส่งรหัสใหม่"}
-                </button>
-                <button
-                  type="button"
-                  onClick={cancelOtpStep}
-                  className="text-gray-500 underline-offset-2 transition hover:text-gray-800 hover:underline"
-                >
-                  ย้อนกลับ
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
           <div className="grid max-w-xs gap-3">
             <label className="block">
               <span className="mb-1.5 block text-sm text-gray-700">รหัสผ่านปัจจุบัน</span>
@@ -737,10 +696,95 @@ export default function ProfilePage() {
           {confirmPassword.length > 0 && !passwordsMatch && (
             <p className="mt-2 text-xs text-red-600">รหัสผ่านใหม่ทั้งสองช่องยังไม่ตรงกัน</p>
           )}
-            </>
-          )}
         </SettingsCard>
       </main>
+
+      {/* pop-up ยืนยันรหัส OTP ก่อนเปลี่ยนรหัสผ่าน */}
+      {passwordStep === "otp" && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 p-4 backdrop-blur-sm"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) cancelOtpStep();
+          }}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="otp-title"
+            className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-5 shadow-2xl sm:p-6"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 id="otp-title" className="text-lg font-semibold text-gray-900">
+                  ยืนยันรหัส OTP
+                </h2>
+                <p className="mt-1 text-sm text-gray-600">
+                  เราส่งรหัส 6 หลักไปที่ <span className="font-medium text-gray-900">{otpEmail || user.email}</span> แล้ว
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={cancelOtpStep}
+                aria-label="ปิด"
+                className="-mr-1 -mt-1 rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+              >
+                <X className="h-4 w-4" strokeWidth={2} />
+              </button>
+            </div>
+
+            <div className="mt-5 flex justify-between gap-1.5 sm:gap-2" onPaste={handleOtpPaste}>
+              {otp.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={(el) => {
+                    otpRefs.current[i] = el;
+                  }}
+                  value={digit}
+                  onChange={(e) => handleOtpChange(i, e.target.value)}
+                  onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                  inputMode="numeric"
+                  autoComplete={i === 0 ? "one-time-code" : "off"}
+                  maxLength={1}
+                  aria-label={`รหัส OTP หลักที่ ${i + 1}`}
+                  className="h-12 w-10 rounded-md border border-gray-300 bg-white text-center text-lg font-semibold text-gray-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)] outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 sm:w-11"
+                />
+              ))}
+            </div>
+
+            <Status flash={passwordFlash} />
+
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={requestPasswordOtp}
+                disabled={resendIn > 0 || sendingOtp}
+                className="text-xs font-medium text-blue-600 transition hover:text-blue-700 disabled:cursor-not-allowed disabled:text-gray-400"
+              >
+                {resendIn > 0 ? `ส่งรหัสใหม่ได้ใน ${resendIn} วิ` : "ส่งรหัสใหม่"}
+              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={cancelOtpStep}
+                  className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  type="button"
+                  onClick={() => submitPassword(otp.join(""))}
+                  disabled={otp.join("").length !== 6 || changingPassword}
+                  className={saveButtonClass}
+                >
+                  {changingPassword && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                  {changingPassword ? "กำลังยืนยัน..." : "ยืนยันและเปลี่ยนรหัสผ่าน"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
