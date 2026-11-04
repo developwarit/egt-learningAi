@@ -1,27 +1,103 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 interface UserProfile {
   id: string;
-  name: string;
-  email: string;
+  name: string | null;
+  username: string | null;
+  email: string | null;
   image: string | null;
   role: string;
   createdAt: string;
   accounts: { provider: string }[];
 }
 
+const inputClass =
+  "w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)] outline-none transition placeholder:text-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500";
+
+const saveButtonClass =
+  "shrink-0 rounded-md bg-gray-900 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-black disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400";
+
+const fieldErrorClass = "mt-1.5 text-xs text-red-600";
+
+function initialsOf(name: string | null) {
+  if (!name) return "U";
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function SettingsCard({
+  title,
+  description,
+  footer,
+  children,
+  saveLabel = "บันทึก",
+  onSave,
+  saving,
+  disabled,
+  message,
+  error,
+}: {
+  title: string;
+  description: string;
+  footer: string;
+  children: React.ReactNode;
+  saveLabel?: string;
+  onSave?: () => void;
+  saving?: boolean;
+  disabled?: boolean;
+  message?: string;
+  error?: string;
+}) {
+  return (
+    <section className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+      <div className="px-6 py-5">
+        <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+        <p className="mt-1.5 text-sm text-gray-600">{description}</p>
+        <div className="mt-4">{children}</div>
+        {message && <p className="mt-3 text-sm text-green-700">{message}</p>}
+        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 bg-gray-50 px-6 py-3">
+        <p className="text-sm text-gray-600">{footer}</p>
+        <button type="button" onClick={onSave} disabled={disabled || saving} className={saveButtonClass}>
+          {saving ? "กำลังบันทึก..." : saveLabel}
+        </button>
+      </div>
+    </section>
+  );
+}
+
 export default function ProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
-  // Password change
+  // ชื่อที่แสดง
+  const [name, setName] = useState("");
+  const [savingName, setSavingName] = useState(false);
+  const [nameMsg, setNameMsg] = useState("");
+  const [nameError, setNameError] = useState("");
+
+  // ชื่อผู้ใช้
+  const [username, setUsername] = useState("");
+  const [savingUsername, setSavingUsername] = useState(false);
+  const [usernameMsg, setUsernameMsg] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+
+  // รูปอวตาร
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [savingImage, setSavingImage] = useState(false);
+  const [imageMsg, setImageMsg] = useState("");
+  const [imageError, setImageError] = useState("");
+
+  // รหัสผ่าน
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,13 +109,18 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
+  const applyUser = (next: UserProfile) => {
+    setUser(next);
+    setName(next.name ?? "");
+    setUsername(next.username ?? "");
+  };
+
   const fetchProfile = async () => {
     try {
       const res = await fetch("/api/profile");
       if (res.ok) {
         const data = await res.json();
-        setUser(data.user);
-        setName(data.user.name || "");
+        applyUser(data.user);
       } else {
         window.location.href = "/login";
       }
@@ -49,51 +130,124 @@ export default function ProfilePage() {
     setLoading(false);
   };
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    setMessage("");
-    setError("");
-    try {
-      const res = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessage("อัปเดตข้อมูลสำเร็จ!");
-        setUser(data.user);
-      } else {
-        setError(data.error || "เกิดข้อผิดพลาด");
-      }
-    } catch {
-      setError("เกิดข้อผิดพลาด กรุณาลองใหม่");
-    }
-    setSaving(false);
+  const patchProfile = async (payload: Record<string, unknown>) => {
+    const res = await fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "เกิดข้อผิดพลาด");
+    applyUser(data.user);
+    return data.user as UserProfile;
   };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setChangingPassword(true);
+  const handleSaveName = async () => {
+    setNameMsg("");
+    setNameError("");
+    setSavingName(true);
+    try {
+      await patchProfile({ name });
+      setNameMsg("บันทึกชื่อที่แสดงแล้ว");
+    } catch (err) {
+      setNameError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
+    }
+    setSavingName(false);
+  };
+
+  const handleSaveUsername = async () => {
+    setUsernameMsg("");
+    setUsernameError("");
+    setSavingUsername(true);
+    try {
+      await patchProfile({ username });
+      setUsernameMsg("บันทึกชื่อผู้ใช้แล้ว");
+    } catch (err) {
+      setUsernameError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
+    }
+    setSavingUsername(false);
+  };
+
+  // ย่อรูปในเบราว์เซอร์ก่อนอัปโหลด เพื่อไม่ให้เก็บไฟล์ใหญ่ลงฐานข้อมูล
+  const handlePickImage = async (file: File | undefined) => {
+    if (!file) return;
+    setImageMsg("");
+    setImageError("");
+
+    if (!file.type.startsWith("image/")) {
+      setImageError("กรุณาเลือกไฟล์รูปภาพ");
+      return;
+    }
+
+    setSavingImage(true);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("อ่านไฟล์ไม่สำเร็จ"));
+        reader.readAsDataURL(file);
+      });
+
+      const resized = await new Promise<string>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const size = 256;
+          const canvas = document.createElement("canvas");
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return reject(new Error("เบราว์เซอร์ไม่รองรับการย่อรูป"));
+          const scale = Math.max(size / img.width, size / img.height);
+          const w = img.width * scale;
+          const h = img.height * scale;
+          ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+          resolve(canvas.toDataURL("image/jpeg", 0.85));
+        };
+        img.onerror = () => reject(new Error("ไฟล์รูปเสียหาย"));
+        img.src = dataUrl;
+      });
+
+      await patchProfile({ image: resized });
+      setImageMsg("อัปเดตรูปโปรไฟล์แล้ว");
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : "อัปโหลดรูปไม่สำเร็จ");
+    }
+    setSavingImage(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleRemoveImage = async () => {
+    setImageMsg("");
+    setImageError("");
+    setSavingImage(true);
+    try {
+      await patchProfile({ image: null });
+      setImageMsg("ลบรูปโปรไฟล์แล้ว");
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : "เกิดข้อผิดพลาด");
+    }
+    setSavingImage(false);
+  };
+
+  const handleChangePassword = async () => {
     setPasswordMsg("");
     setPasswordError("");
 
     if (newPassword !== confirmPassword) {
       setPasswordError("รหัสผ่านใหม่ไม่ตรงกัน");
-      setChangingPassword(false);
       return;
     }
 
+    setChangingPassword(true);
     try {
       const res = await fetch("/api/profile/password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        setPasswordMsg("เปลี่ยนรหัสผ่านสำเร็จ!");
+        setPasswordMsg("เปลี่ยนรหัสผ่านสำเร็จ");
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
@@ -109,147 +263,208 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#faf9f7] flex items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-[#2563EB]" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600" />
       </div>
     );
   }
 
   if (!user) return null;
 
-  const initials = user.name
-    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
-    : "U";
+  const roleLabel = user.role === "ADMIN" ? "ผู้ดูแล" : user.role === "STUDENT" ? "นักเรียน" : user.role;
 
   return (
     <div className="min-h-screen bg-[#faf9f7]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <Link href="/" className="inline-flex items-center gap-2 text-xl font-bold text-gray-900">
-            <span className="text-[#2563EB]">dev.</span>warit
+      <header className="border-b border-gray-200 bg-[#faf9f7]/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+          <Link href="/" className="inline-flex items-center gap-2 text-base font-bold text-gray-900">
+            <span className="text-blue-600">EGT</span>-Learning
           </Link>
-          <Link href="/" className="text-sm text-gray-500 hover:text-gray-900 transition">
-            ← กลับหน้าหลัก
+          <Link href="/courses" className="text-sm text-gray-500 transition hover:text-gray-900">
+            ไปที่คอร์สของฉัน
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-6 py-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">โปรไฟล์ของฉัน</h1>
-
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Left - User Card */}
-          <div className="lg:col-span-1">
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#2563EB] text-2xl font-bold text-white">
-                {user.image ? (
-                  <img src={user.image} alt={user.name || ""} className="h-20 w-20 rounded-full object-cover" />
-                ) : (
-                  initials
-                )}
-              </div>
-              <h2 className="text-lg font-semibold text-gray-900">{user.name || "ไม่มีชื่อ"}</h2>
-              <p className="text-sm text-gray-500 mt-1">{user.email}</p>
-              <div className="mt-3 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                {user.role === "STUDENT" ? "🎓 นักเรียน" : user.role === "ADMIN" ? "👑 ผู้ดูแล" : user.role}
-              </div>
-
-              <div className="mt-6 border-t border-gray-100 pt-4 text-left text-sm text-gray-500">
-                <p>วันที่สมัคร: {new Date(user.createdAt).toLocaleDateString("th-TH")}</p>
-                <p className="mt-1">เชื่อมต่อกับ:</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {user.accounts.length > 0 ? (
-                    user.accounts.map((acc) => (
-                      <span key={acc.provider} className="rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-600">
-                        {acc.provider}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">Email/Password</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right - Forms */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Edit Profile */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">แก้ไขข้อมูลส่วนตัว</h3>
-              <form onSubmit={handleUpdateProfile} className="space-y-4">
-                {message && (
-                  <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-                    {message}
-                  </div>
-                )}
-                {error && (
-                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-                    {error}
-                  </div>
-                )}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">ชื่อ</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 transition focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">อีเมล</label>
-                  <input
-                    type="email"
-                    value={user.email}
-                    disabled
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-500 cursor-not-allowed"
-                  />
-                  <p className="mt-1 text-xs text-gray-400">ไม่สามารถเปลี่ยนอีเมลได้</p>
-                </div>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="rounded-xl bg-[#2563EB] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2563EB]/80 disabled:opacity-50"
-                >
-                  {saving ? "กำลังบันทึก..." : "บันทึกข้อมูล"}
-                </button>
-              </form>
-            </div>
-
-            {/* Change Password */}
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">เปลี่ยนรหัสผ่าน</h3>
-              <form onSubmit={handleChangePassword} className="space-y-4">
-                {passwordMsg && (
-                  <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-                    {passwordMsg}
-                  </div>
-                )}
-                {passwordError && (
-                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-                    {passwordError}
-                  </div>
-                )}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">รหัสผ่านปัจจุบัน</label>
-                  <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 transition focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">รหัสผ่านใหม่</label>
-                  <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 transition focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">ยืนยันรหัสผ่านใหม่</label>
-                  <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 transition focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
-                </div>
-                <button type="submit" disabled={changingPassword} className="rounded-xl border border-gray-300 bg-white px-6 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50">
-                  {changingPassword ? "กำลังเปลี่ยน..." : "เปลี่ยนรหัสผ่าน"}
-                </button>
-              </form>
-            </div>
-          </div>
+      <div className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-3xl px-6 py-4">
+          <h1 className="text-center text-sm font-semibold text-gray-900">ตั้งค่าบัญชี</h1>
         </div>
+      </div>
+
+      <main className="mx-auto max-w-3xl space-y-6 px-6 py-8">
+        <p className="text-center text-xs text-gray-500">
+          {roleLabel} · สมัครเมื่อ {new Date(user.createdAt).toLocaleDateString("th-TH", { day: "numeric", month: "long", year: "numeric" })}
+          {user.accounts.length > 0 && ` · เชื่อมต่อ ${user.accounts.map((a) => a.provider).join(", ")}`}
+        </p>
+
+        {/* Avatar */}
+        <SettingsCard
+          title="รูปโปรไฟล์"
+          description="รูปนี้จะแสดงในหน้าชุมชนและคอร์สของคุณ"
+          footer="รูปโปรไฟล์ไม่บังคับ แต่แนะนำให้ตั้งไว้"
+          saveLabel="เลือกไฟล์"
+          onSave={() => fileInputRef.current?.click()}
+          saving={savingImage}
+          message={imageMsg}
+          error={imageError}
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              {user.image ? (
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  disabled={savingImage}
+                  className="text-xs text-gray-500 underline-offset-2 transition hover:text-red-600 hover:underline disabled:opacity-50"
+                >
+                  ลบรูปปัจจุบัน
+                </button>
+              ) : (
+                <p className="text-xs text-gray-500">ยังไม่มีรูปโปรไฟล์</p>
+              )}
+            </div>
+            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full bg-blue-600 ring-1 ring-gray-200">
+              {user.image ? (
+                <img src={user.image} alt={user.name || "รูปโปรไฟล์"} className="h-full w-full object-cover" />
+              ) : (
+                <span className="flex h-full w-full items-center justify-center text-xl font-bold text-white">
+                  {initialsOf(user.name)}
+                </span>
+              )}
+            </div>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            className="hidden"
+            onChange={(e) => handlePickImage(e.target.files?.[0])}
+          />
+        </SettingsCard>
+
+        {/* Display Name */}
+        <SettingsCard
+          title="ชื่อที่แสดง"
+          description="ชื่อที่เพื่อน ๆ และผู้สอนเห็นเมื่อคุณโพสต์ในชุมชน"
+          footer="ใช้ได้ไม่เกิน 32 ตัวอักษร"
+          onSave={handleSaveName}
+          saving={savingName}
+          disabled={!name.trim() || name.trim() === (user.name ?? "")}
+          message={nameMsg}
+          error={nameError}
+        >
+          <input
+            type="text"
+            value={name}
+            maxLength={32}
+            onChange={(e) => {
+              setName(e.target.value);
+              setNameMsg("");
+              setNameError("");
+            }}
+            placeholder="ชื่อของคุณ"
+            className={`${inputClass} max-w-xs`}
+          />
+        </SettingsCard>
+
+        {/* Username */}
+        <SettingsCard
+          title="ชื่อผู้ใช้"
+          description="ใช้ล็อกอินและแสดงเป็นชื่อย่อของคุณในระบบ"
+          footer="อย่างน้อย 3 ตัว ใช้ a-z, 0-9, _ และ . เท่านั้น"
+          onSave={handleSaveUsername}
+          saving={savingUsername}
+          disabled={!username.trim() || username.trim() === (user.username ?? "")}
+          message={usernameMsg}
+          error={usernameError}
+        >
+          <div className="flex max-w-sm items-stretch">
+            <span className="flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
+              @
+            </span>
+            <input
+              type="text"
+              value={username}
+              maxLength={20}
+              onChange={(e) => {
+                setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, ""));
+                setUsernameMsg("");
+                setUsernameError("");
+              }}
+              placeholder="username"
+              className={`${inputClass} rounded-l-none`}
+            />
+          </div>
+          {!user.username && <p className={fieldErrorClass}>บัญชีนี้ยังไม่มีชื่อผู้ใช้ ตั้งเลยเพื่อให้ล็อกอินด้วยชื่อผู้ใช้ได้</p>}
+        </SettingsCard>
+
+        {/* Email */}
+        <SettingsCard
+          title="อีเมล"
+          description="อีเมลที่ใช้เข้าสู่ระบบและรับการแจ้งเตือน"
+          footer="อีเมลใช้ระบุตัวตน จึงแก้ไขเองไม่ได้"
+          saveLabel="บันทึก"
+          disabled
+        >
+          <input type="email" value={user.email ?? ""} disabled className={`${inputClass} max-w-sm`} />
+        </SettingsCard>
+
+        {/* Password */}
+        <SettingsCard
+          title="รหัสผ่าน"
+          description="เปลี่ยนรหัสผ่านเพื่อความปลอดภัยของบัญชี"
+          footer="อย่างน้อย 8 ตัว พร้อมตัวพิมพ์ใหญ่ พิมพ์เล็ก และตัวเลข"
+          onSave={handleChangePassword}
+          saving={changingPassword}
+          disabled={!currentPassword || !newPassword || !confirmPassword}
+          message={passwordMsg}
+          error={passwordError}
+        >
+          <div className="grid max-w-sm gap-3">
+            <label className="block">
+              <span className="mb-1.5 block text-sm text-gray-700">รหัสผ่านปัจจุบัน</span>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  setPasswordError("");
+                  setPasswordMsg("");
+                }}
+                className={inputClass}
+                autoComplete="current-password"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm text-gray-700">รหัสผ่านใหม่</span>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                  setPasswordError("");
+                  setPasswordMsg("");
+                }}
+                className={inputClass}
+                autoComplete="new-password"
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-sm text-gray-700">ยืนยันรหัสผ่านใหม่</span>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setPasswordError("");
+                  setPasswordMsg("");
+                }}
+                className={inputClass}
+                autoComplete="new-password"
+              />
+            </label>
+          </div>
+        </SettingsCard>
       </main>
     </div>
   );
