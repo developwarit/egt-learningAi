@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { getSessionFromRequest } from "@/lib/session";
+import { isPasswordOtpEnabled } from "@/lib/email";
+import { verifyPasswordOtp } from "@/lib/password-otp";
 
 export async function POST(request: Request) {
   const session = await getSessionFromRequest(request);
@@ -9,7 +11,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "กรุณาเข้าสู่ระบบ" }, { status: 401 });
   }
 
-  const { currentPassword, newPassword } = await request.json();
+  const { currentPassword, newPassword, code } = await request.json();
 
   if (!currentPassword || !newPassword) {
     return NextResponse.json({ error: "กรุณากรอกรหัสผ่านทั้งสองช่อง" }, { status: 400 });
@@ -43,6 +45,29 @@ export async function POST(request: Request) {
   const isMatch = await bcrypt.compare(currentPassword, user.hashedPassword);
   if (!isMatch) {
     return NextResponse.json({ error: "รหัสผ่านปัจจุบันไม่ถูกต้อง" }, { status: 400 });
+  }
+
+  // ต้องยืนยันรหัส OTP จากอีเมลก่อนเปลี่ยนรหัสผ่าน (ตรวจหลังเช็กรหัสเดิมแล้ว เพื่อไม่ให้เผารหัส OTP ฟรี)
+  if (isPasswordOtpEnabled()) {
+    if (!code) {
+      return NextResponse.json(
+        { error: "กรุณายืนยันรหัส OTP จากอีเมลก่อน", requireOtp: true },
+        { status: 428 }
+      );
+    }
+
+    const result = await verifyPasswordOtp(session.userId, String(code).replace(/\D/g, ""));
+    if (result !== "ok") {
+      const messages: Record<string, string> = {
+        invalid: "รหัส OTP ไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง",
+        expired: "รหัส OTP หมดอายุแล้ว กรุณาขอรหัสใหม่",
+        locked: "กรอกรหัสผิดหลายครั้งเกินไป กรุณาขอรหัสใหม่",
+      };
+      return NextResponse.json(
+        { error: messages[result] ?? "ยืนยันรหัส OTP ไม่สำเร็จ", otpFailed: true },
+        { status: 400 }
+      );
+    }
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, 12);

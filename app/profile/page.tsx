@@ -135,10 +135,24 @@ export default function ProfilePage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
   const [passwordFlash, setPasswordFlash] = useFlash();
+  const [passwordStep, setPasswordStep] = useState<"form" | "otp">("form");
+  const [passwordOtpRequired, setPasswordOtpRequired] = useState(false);
+  const [otpEmail, setOtpEmail] = useState("");
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [resendIn, setResendIn] = useState(0);
+  const otpRefs = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  // นับถอยหลังก่อนให้กดส่งรหัส OTP ซ้ำ
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const timer = setTimeout(() => setResendIn((n) => n - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [resendIn]);
 
   const applyUser = (next: UserProfile) => {
     setUser(next);
@@ -152,6 +166,7 @@ export default function ProfilePage() {
       if (res.ok) {
         const data = await res.json();
         applyUser(data.user);
+        setPasswordOtpRequired(Boolean(data.passwordOtpRequired));
       } else {
         window.location.href = "/login?next=/profile";
         return;
@@ -274,7 +289,30 @@ export default function ProfilePage() {
   const passwordValid = passwordRules.every((r) => r.ok);
   const passwordsMatch = newPassword.length > 0 && newPassword === confirmPassword;
 
-  const handleChangePassword = async () => {
+  // ขอรหัส OTP 6 หลักทางอีเมล ก่อนยืนยันเปลี่ยนรหัสผ่าน (แบบเดียวกับ Vercel)
+  const requestPasswordOtp = async () => {
+    setPasswordFlash(null);
+    setSendingOtp(true);
+    try {
+      const res = await fetch("/api/profile/password/otp", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "ส่งรหัสยืนยันไม่สำเร็จ");
+      setOtpEmail(data.email || user?.email || "");
+      setOtp(["", "", "", "", "", ""]);
+      setResendIn(60);
+      setPasswordStep("otp");
+      setPasswordFlash({
+        type: "success",
+        text: data.delivered === false ? "โหมดพัฒนา: รหัส OTP อยู่ใน log ของ dev server" : "ส่งรหัสยืนยันแล้ว กรุณาตรวจสอบอีเมล",
+      });
+      setTimeout(() => otpRefs.current[0]?.focus(), 80);
+    } catch (err) {
+      setPasswordFlash({ type: "error", text: err instanceof Error ? err.message : "ส่งรหัสยืนยันไม่สำเร็จ" });
+    }
+    setSendingOtp(false);
+  };
+
+  const submitPassword = async (code?: string) => {
     setPasswordFlash(null);
     if (!passwordValid) {
       setPasswordFlash({ type: "error", text: "รหัสผ่านใหม่ยังไม่ตรงตามเงื่อนไข" });
@@ -290,7 +328,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile/password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ currentPassword, newPassword }),
+        body: JSON.stringify(code ? { currentPassword, newPassword, code } : { currentPassword, newPassword }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
@@ -298,13 +336,65 @@ export default function ProfilePage() {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
+        setOtp(["", "", "", "", "", ""]);
+        setPasswordStep("form");
+        setResendIn(0);
+      } else if (data.requireOtp) {
+        // เผื่อกรณีหน้าเว็บไม่ได้ข้อมูล OTP ตั้งแต่แรก
+        setPasswordOtpRequired(true);
+        await requestPasswordOtp();
       } else {
         setPasswordFlash({ type: "error", text: data.error || "เกิดข้อผิดพลาด" });
+        if (data.otpFailed) {
+          setOtp(["", "", "", "", "", ""]);
+          otpRefs.current[0]?.focus();
+        }
       }
     } catch {
       setPasswordFlash({ type: "error", text: "เกิดข้อผิดพลาด กรุณาลองใหม่" });
     }
     setChangingPassword(false);
+  };
+
+  const handlePasswordSave = () => {
+    if (passwordStep === "otp") return submitPassword(otp.join(""));
+    if (passwordOtpRequired) return requestPasswordOtp();
+    return submitPassword();
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    const digit = value.replace(/\D/g, "").slice(-1);
+    setOtp((prev) => prev.map((d, i) => (i === index ? digit : d)));
+    setPasswordFlash(null);
+    if (digit && index < 5) otpRefs.current[index + 1]?.focus();
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+    if (e.key === "ArrowLeft" && index > 0) otpRefs.current[index - 1]?.focus();
+    if (e.key === "ArrowRight" && index < 5) otpRefs.current[index + 1]?.focus();
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const digits = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (!digits) return;
+    e.preventDefault();
+    const next = ["", "", "", "", "", ""];
+    digits.split("").forEach((d, i) => {
+      next[i] = d;
+    });
+    setOtp(next);
+    setPasswordFlash(null);
+    otpRefs.current[Math.min(digits.length, 5)]?.focus();
+  };
+
+  const cancelOtpStep = () => {
+    setPasswordStep("form");
+    setOtp(["", "", "", "", "", ""]);
+    setResendIn(0);
+    setPasswordFlash(null);
   };
 
   if (loading) {
@@ -518,14 +608,70 @@ export default function ProfilePage() {
         {/* Password */}
         <SettingsCard
           title="รหัสผ่าน"
-          description="เปลี่ยนรหัสผ่านเพื่อความปลอดภัยของบัญชี"
-          footer="อย่างน้อย 8 ตัว พร้อมตัวพิมพ์ใหญ่ พิมพ์เล็ก และตัวเลข"
-          disabledHint="กรอกรหัสผ่านให้ครบตามเงื่อนไขเพื่อบันทึก"
-          onSubmit={handleChangePassword}
-          saving={changingPassword}
-          disabled={!currentPassword || !passwordValid || !passwordsMatch}
+          description={
+            passwordStep === "otp"
+              ? "ยืนยันรหัส OTP ที่ส่งไปอีเมล เพื่อเปลี่ยนรหัสผ่าน"
+              : "เปลี่ยนรหัสผ่านเพื่อความปลอดภัยของบัญชี"
+          }
+          footer={
+            passwordStep === "otp"
+              ? "รหัส 6 หลักมีอายุ 10 นาที"
+              : "อย่างน้อย 8 ตัว พร้อมตัวพิมพ์ใหญ่ พิมพ์เล็ก และตัวเลข"
+          }
+          disabledHint={passwordStep === "otp" ? "กรอกรหัส 6 หลักให้ครบ" : "กรอกรหัสผ่านให้ครบตามเงื่อนไขเพื่อบันทึก"}
+          saveLabel={passwordStep === "otp" ? "ยืนยันและเปลี่ยนรหัสผ่าน" : "บันทึก"}
+          onSubmit={handlePasswordSave}
+          saving={changingPassword || sendingOtp}
+          disabled={
+            passwordStep === "otp"
+              ? otp.join("").length !== 6
+              : !currentPassword || !passwordValid || !passwordsMatch
+          }
           flash={passwordFlash}
         >
+          {passwordStep === "otp" ? (
+            <div className="max-w-sm">
+              <p className="text-sm text-gray-700">
+                ส่งรหัส 6 หลักไปที่ <span className="font-medium text-gray-900">{otpEmail || user.email}</span> แล้ว
+              </p>
+              <div className="mt-3 flex gap-2" onPaste={handleOtpPaste}>
+                {otp.map((digit, i) => (
+                  <input
+                    key={i}
+                    ref={(el) => {
+                      otpRefs.current[i] = el;
+                    }}
+                    value={digit}
+                    onChange={(e) => handleOtpChange(i, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                    inputMode="numeric"
+                    autoComplete={i === 0 ? "one-time-code" : "off"}
+                    maxLength={1}
+                    aria-label={`รหัส OTP หลักที่ ${i + 1}`}
+                    className="h-11 w-10 rounded-md border border-gray-300 bg-white text-center text-lg font-semibold text-gray-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)] outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
+                  />
+                ))}
+              </div>
+              <div className="mt-3 flex items-center gap-4 text-xs">
+                <button
+                  type="button"
+                  onClick={requestPasswordOtp}
+                  disabled={resendIn > 0 || sendingOtp}
+                  className="font-medium text-blue-600 transition hover:text-blue-700 disabled:cursor-not-allowed disabled:text-gray-400"
+                >
+                  {resendIn > 0 ? `ส่งรหัสใหม่ได้ใน ${resendIn} วิ` : "ส่งรหัสใหม่"}
+                </button>
+                <button
+                  type="button"
+                  onClick={cancelOtpStep}
+                  className="text-gray-500 underline-offset-2 transition hover:text-gray-800 hover:underline"
+                >
+                  ย้อนกลับ
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
           <div className="grid max-w-xs gap-3">
             <label className="block">
               <span className="mb-1.5 block text-sm text-gray-700">รหัสผ่านปัจจุบัน</span>
@@ -590,6 +736,8 @@ export default function ProfilePage() {
           )}
           {confirmPassword.length > 0 && !passwordsMatch && (
             <p className="mt-2 text-xs text-red-600">รหัสผ่านใหม่ทั้งสองช่องยังไม่ตรงกัน</p>
+          )}
+            </>
           )}
         </SettingsCard>
       </main>

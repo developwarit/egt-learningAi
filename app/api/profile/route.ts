@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSessionFromRequest } from "@/lib/session";
+import { isPasswordOtpEnabled } from "@/lib/email";
 
 const profileSelect = {
   id: true,
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "ไม่พบผู้ใช้" }, { status: 404 });
   }
 
-  return NextResponse.json({ user });
+  return NextResponse.json({ user, passwordOtpRequired: isPasswordOtpEnabled() });
 }
 
 // PATCH - อัปเดตข้อมูล profile (ชื่อที่แสดง, ชื่อผู้ใช้, รูปอวตาร)
